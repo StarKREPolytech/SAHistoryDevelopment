@@ -1,0 +1,22 @@
+<resources>
+    <string name="head">Head</string>
+    <string name="app_name">Истории</string>
+    <string name="histories">Histories</string>
+    <string name="put_new_history_name">Введите новое имя истории</string>
+    <string name="history_select_all">Выбрать все</string>
+    <string name="history_deselect_all">Отменить выделение</string>
+    <string name="local_resources">Локальное хранилище</string>
+    <string name="cloud_resources">Облачное хранилище</string>
+    <string name="string_yes">Да</string>
+    <string name="string_no">Нет</string>
+    <string name="string_cancel">Отмена</string>
+    <string name="string_sort_by_alphabet">Сортировать по алфавиту</string>
+    <string name="string_sort_by_time">Сортировать по дате</string>
+    <string name="menu">Menu</string>
+    <string name="map">Map</string>
+    <string name="history">History</string>
+    <string name="charts">Charts</string>
+
+    <string name="tab_title_main_1">Локальное хранилище</string>
+    <string name="tab_title_main_2">Облачное хранилище</string>
+</resources>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="blue">#3f51b5</color>
+    <color name="dark_blue">#303F9F</color>
+    <color name="night_blue">#d2090971</color>
+    <color name="white">#ffffff</color>
+    <color name="light_gray">#ebe7dfdf</color>
+    <color name="cloudy_white">#e4f1ff</color>
+    <color name="light_blue">#e1a2deff</color>
+    <color name="history_green">#9f0a9c4e</color>
+    <color name="history_yellow">#e8f1e50c</color>
+    <color name="history_red">#e8e70d0d</color>
+    <color name="history_dark_red">#e89b1014</color>
+    <color name="night_theme_blue_history">#2e3069</color>
+    <color name="night_theme_sea_history">#4edca0</color>
+    <color name="toolbar_background_nightMode">#121B3D</color>
+    <color name="background_dayMode">#FFFFFF</color>
+
+
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="mainAppBar">#282888</color>
+    <color name="mainTabIndicator">#FA6F46</color>
+    <color name="mainToolbar">#282888</color>
+    <color name="history_card_color">#182761</color>
+</resources>

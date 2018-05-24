@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_item_menu"
+        android:icon="@drawable/selector_profile_activity"
+        android:title="@string/menu" />
+    <item
+        android:id="@+id/nav_item_head"
+        android:icon="@drawable/selector_head_activity"
+        android:title="@string/head" />
+    <item
+        android:id="@+id/nav_item_map"
+        android:icon="@drawable/selector_map_activity"
+        android:title="@string/map" />
+    <item
+        android:id="@+id/nav_item_history"
+        android:icon="@drawable/selector_history_activity"
+        android:title="@string/history" />
+    <item
+        android:id="@+id/nav_item_graphics"
+        android:icon="@drawable/selector_charts_activity"
+        android:title="@string/charts" />
+</menu>
