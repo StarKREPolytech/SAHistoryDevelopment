@@ -2,8 +2,8 @@ package com.historyManagement.historyManagment.implementations;
 
 import android.annotation.SuppressLint;
 
-import com.example.starkre.sleepAlertHistory.R;
 import com.annotations.NeedImplementation;
+import com.example.starkre.sleepAlertHistory.R;
 import com.historyManagement.history.historyData.History;
 import com.historyManagement.historyManagment.HistoryManager;
 
@@ -35,7 +35,7 @@ public final class LocalHistoryManager extends HistoryManager {
     @SuppressLint("WrongViewCast")
     @Override
     public final int getLabel() {
-        return R.drawable.local_history_button;
+        return R.drawable.history_local_repository_label_image_view;
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.activities.currentHistoryActivity
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Color
+import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.view.View
@@ -40,28 +41,28 @@ class CurrentHistoryActivity : AppCompatActivity() {
     private var passedDistanceTextView: TextView? = null
 
     private var warningNumberTextView: TextView? = null
-//
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        THIS = this
-//        super.onCreate(savedInstanceState)
-//        this.setContentView(R.layout.activity_history)
-//        this.headlineTextView = this.findViewById(R.id.history_activity_headline_text_view)
-//        this.passedDistanceTextView = this.findViewById<TextView>(R.id.history_distance_text_view)
-//        this.warningNumberTextView = this.findViewById(R.id.history_warnings_text_view)
-//        this.installPieTirednessChart()
-//    }
-//
-//
-//    private fun installPieTirednessChart() {
-//        this.pieTirednessChart = this.findViewById(R.id.history_tiredness_pie_chart)
-//        this.pieTirednessChart?.setUsePercentValues(true)
-//        this.pieTirednessChart?.description?.isEnabled = false
-//        this.pieTirednessChart?.setExtraOffsets(5f, 10f, 5f, 5f)
-//        this.pieTirednessChart?.dragDecelerationFrictionCoef = 0.95f
-//        this.pieTirednessChart?.isDrawHoleEnabled = true
-//        this.configurePieTirednessEntryLabel()
-//        this.configurePieTirednessChartLegend()
-//    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        THIS = this
+        super.onCreate(savedInstanceState)
+        this.setContentView(R.layout.current_history_activity)
+        this.headlineTextView = this.findViewById(R.id.history_activity_headline_text_view)
+        this.passedDistanceTextView = this.findViewById(R.id.history_distance_text_view)
+        this.warningNumberTextView = this.findViewById(R.id.history_warnings_text_view)
+        this.installPieTirednessChart()
+    }
+
+
+    private fun installPieTirednessChart() {
+        this.pieTirednessChart = this.findViewById(R.id.history_tiredness_pie_chart)
+        this.pieTirednessChart?.setUsePercentValues(true)
+        this.pieTirednessChart?.description?.isEnabled = false
+        this.pieTirednessChart?.setExtraOffsets(5f, 10f, 5f, 5f)
+        this.pieTirednessChart?.dragDecelerationFrictionCoef = 0.95f
+        this.pieTirednessChart?.isDrawHoleEnabled = true
+        this.configurePieTirednessEntryLabel()
+        this.configurePieTirednessChartLegend()
+    }
 
     @SuppressLint("SetTextI18n")
     public override fun onStart() {

@@ -39,7 +39,7 @@ public final class HistoryViewUtils {
     }
 
     public static void showEditButtonAndHideTick(final HistoryViewHolder holder){
-        holder.getHistoryRepositoryButton().setVisibility(View.VISIBLE);
+        holder.getHistoryRepositoryImageView().setVisibility(View.VISIBLE);
         holder.getImageViewTick().setVisibility(View.INVISIBLE);
         holder.getImageViewTickOff().setVisibility(View.INVISIBLE);
     }
@@ -52,7 +52,7 @@ public final class HistoryViewUtils {
     }
 
     public static void hideEditButtonAndShowTick(final HistoryViewHolder holder){
-        holder.getHistoryRepositoryButton().setVisibility(View.INVISIBLE);
+        holder.getHistoryRepositoryImageView().setVisibility(View.INVISIBLE);
         holder.getImageViewTickOff().setVisibility(View.VISIBLE);
     }
 

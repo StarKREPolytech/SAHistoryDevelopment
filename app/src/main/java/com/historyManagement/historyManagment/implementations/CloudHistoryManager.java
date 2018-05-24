@@ -35,7 +35,7 @@ public final class CloudHistoryManager extends HistoryManager {
     @SuppressLint("WrongViewCast")
     @Override
     public final int getLabel() {
-        return R.drawable.cloud_history_button;
+        return R.drawable.history_cloud_repository_label_image_view;
     }
 
     @Override

@@ -25,7 +25,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/mainAppBar"
-            app:tabIndicatorColor="@color/mainTabIndicator" />
+            app:tabIndicatorColor="@color/night_theme_sea_history" />
 
     </android.support.design.widget.AppBarLayout>
 

@@ -21,7 +21,7 @@ import java.util.logging.Logger
 @FuckingStaticSingleton
 class HistoryListActivity : AppCompatActivity() {
 
-    companion object A {
+    companion object {
         @SuppressLint("StaticFieldLeak")
         @JvmField
         var THIS: HistoryListActivity? = null
@@ -34,6 +34,7 @@ class HistoryListActivity : AppCompatActivity() {
     var viewPager: ViewPager? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        THIS = this
         super.onCreate(savedInstanceState)
         this.setContentView(R.layout.activity_history_list)
         this.init()
@@ -91,24 +92,30 @@ class HistoryListActivity : AppCompatActivity() {
     }
 
 
+    fun refreshScreen() {}
 
-    fun refreshScreen(){}
+    private fun getPageChangeListener(): ViewPager.OnPageChangeListener = object : ViewPager.OnPageChangeListener {
 
-    private fun getPageChangeListener(): ViewPager.OnPageChangeListener {
-        return object : ViewPager.OnPageChangeListener {
+        override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
 
-            override fun onPageScrolled(position: Int, positionOffset: Float
-                                        , positionOffsetPixels: Int) {
+        }
 
-            }
+        override fun onPageSelected(position: Int) {
+            //Меняем местами менеджеров:
+            HistoryManagerProvider.THIS?.swapLocalAndCloud()
+            //Достаём уже нового менеджера историй:
+            val adapter = RepositoryFragment.THIS?.recyclerViewAdapter
+            //Говорим адаптеру, что данные поменялись, и он перепривязывает холдеры:
+            adapter?.notifyDataSetChanged()
+            //Поменяли картинку на кнопке синхронизации:
+            RepositoryFragment.THIS?.setDescriptionAboutHistoryVisibility()
+            //Говорим адаптеру, чтобы он переключился в режим просмотра.
+            adapter?.switchFromSelectingToBrowsingMode()
+            HistoryListActivity.THIS?.refreshScreen()
+        }
 
-            override fun onPageSelected(position: Int) {
+        override fun onPageScrollStateChanged(state: Int) {
 
-            }
-
-            override fun onPageScrollStateChanged(state: Int) {
-
-            }
         }
     }
 }

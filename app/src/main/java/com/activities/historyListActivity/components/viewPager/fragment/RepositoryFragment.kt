@@ -1,6 +1,7 @@
 package com.activities.historyListActivity.components.viewPager.fragment
 
 import android.annotation.SuppressLint
+
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
@@ -12,8 +13,9 @@ import com.example.starkre.sleepAlertHistory.R
 import com.activities.historyListActivity.HistoryListActivity
 import com.activities.historyListActivity.components.viewPager.recyclerView.historyListRecyclerViewAdapter.HistoryRecyclerViewAdapter
 import com.annotations.FuckingStaticSingleton
+import com.historyManagement.provider.HistoryManagerProvider
+import com.historyManagement.utilities.HistoryViewUtils
 import java.util.logging.Logger
-
 @FuckingStaticSingleton
 class RepositoryFragment : Fragment() {
 
@@ -27,6 +29,8 @@ class RepositoryFragment : Fragment() {
 
     var recyclerViewAdapter: HistoryRecyclerViewAdapter? = null
 
+    private var descriptionTextView: View? = null
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?
                               , savedInstanceState: Bundle?): View? {
         THIS = this
@@ -37,6 +41,7 @@ class RepositoryFragment : Fragment() {
 
     private fun init(view: View){
         this.initRecyclerView(view)
+        this.descriptionTextView = view.findViewById(R.id.history_list_activity_text_description)
     }
 
     private fun initRecyclerView(view: View) {
@@ -47,5 +52,17 @@ class RepositoryFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(HistoryListActivity.THIS)
         recyclerView.adapter = this.recyclerViewAdapter
         recyclerView.requestLayout()
+    }
+
+    /**
+     * setDescriptionAboutHistoryVisibility() устанавливает текстовую
+     * информацию об окне истории в центре, если нет историй.
+     */
+
+    fun setDescriptionAboutHistoryVisibility() {
+        val historyManager = HistoryManagerProvider.THIS?.get()
+        //Если список пустой, то вывести информацию:
+        val isEmpty = historyManager?.hasHistories()
+        HistoryViewUtils.setVisibility(isEmpty!!, this.descriptionTextView)
     }
 }

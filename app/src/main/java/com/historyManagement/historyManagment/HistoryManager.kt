@@ -1,7 +1,7 @@
 package com.historyManagement.historyManagment
 
-import com.example.starkre.sleepAlertHistory.R
 import com.annotations.Temporary
+import com.example.starkre.sleepAlertHistory.R
 import com.historyManagement.history.historyData.History
 import java.util.*
 import java.util.logging.Logger
@@ -154,7 +154,7 @@ abstract class HistoryManager {
 
     fun hasHistory(history: History): Boolean = this.histories.contains(history)
 
-    fun getSynchronizedLabel(): Int = R.drawable.sync_history_button
+    fun getSynchronizedLabel(): Int = R.drawable.history_sync_repository_label_image_view
 
     fun getSynchronizedColor(): Int = R.color.light_blue
 

@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.activities.historyListActivity.components.viewPager.fragment.RepositoryFragment;
 import com.example.starkre.sleepAlertHistory.R;
 import com.activities.historyListActivity.HistoryListActivity;
 import com.activities.historyListActivity.components.viewPager.recyclerView.historyListRecyclerViewAdapter.historyConfigurations.ActionType;
@@ -29,6 +30,8 @@ import com.historyManagement.historyManagment.implementations.CloudHistoryManage
 import com.historyManagement.historyManagment.implementations.LocalHistoryManager;
 import com.historyManagement.provider.HistoryManagerProvider;
 import com.historyManagement.utilities.HistoryViewUtils;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -156,7 +159,7 @@ public final class HistoryRecyclerViewAdapter extends RecyclerView.Adapter<Histo
         //Устанавливаем переименовываемую историю:
         this.setHistoryTextEditor(history, holder);
         //Устанавливаем GUI для синхронизированной / несинхронизированной истории:
-        final ImageButton repositoryButton = holder.getHistoryRepositoryButton();
+        final ImageView repositoryButton = holder.getHistoryRepositoryImageView();
         final int labelID;
         final int colorID;
         if (HistoryManagerProvider.THIS.isSynchronizedHistory(history)) {
@@ -167,8 +170,6 @@ public final class HistoryRecyclerViewAdapter extends RecyclerView.Adapter<Histo
             colorID = currentHistoryManager.getColor();
         }
         repositoryButton.setImageResource(labelID);
-        repositoryButton.setBackgroundResource(colorID);
-//        holder.getRelativeLayout().setBackgroundResource(colorID);
         holder.getLabelImageView().setBackgroundResource(colorID);
         switch (this.adapterMode) {
             case BROWSING:
@@ -296,7 +297,7 @@ public final class HistoryRecyclerViewAdapter extends RecyclerView.Adapter<Histo
         switch (this.adapterMode) {
             case BROWSING:
                 //Идем в историю --->
-                this.parentActivity.goToCurrentHistory(historyManager.getHistory(currentPosition));
+                HistoryListActivity.THIS.goToCurrentHistory(historyManager.getHistory(currentPosition));
                 break;
             case SELECTING:
                 //Если история не выбрана, то выбираем и ставим галочку.
@@ -324,13 +325,13 @@ public final class HistoryRecyclerViewAdapter extends RecyclerView.Adapter<Histo
     public void changeMode(final ImageView imageViewTick, final int currentPosition) {
         switch (this.adapterMode) {
             case BROWSING:
-//                this.switchFromBrowsingToSelectingMode();
+                this.switchFromBrowsingToSelectingMode();
                 HistoryManagerProvider.THIS.selectHistory(currentPosition);
                 imageViewTick.setVisibility(View.VISIBLE);
                 break;
             case SELECTING:
                 //Переходим в режим просмотра:
-//                this.switchFromSelectingToBrowsingMode();
+                this.switchFromSelectingToBrowsingMode();
                 break;
             case RENAMING:
                 //Устанавливаем заголовок, который был до переименовывания:
@@ -345,17 +346,17 @@ public final class HistoryRecyclerViewAdapter extends RecyclerView.Adapter<Histo
      * режим выбора.
      */
 
-//    public final void switchFromBrowsingToSelectingMode() {
+    public final void switchFromBrowsingToSelectingMode() {
 //        final HistoryTopBar historyTopBar = this.parentActivity
 //                .getHistoryTopBar();
 //        final HistoryBottomBar historyBottomBar = RepositoryFragment.THIS.getHistoryBottomBar();
 //        final HistoryNavigationFrame navFrame = historyTopBar.getNavigationFrame();
 //        this.adapterMode = SELECTING;
-//        HistoryViewUtils.hideAllEditButtonsAndShowAllTicks(this.historyViewHolderList);
+        HistoryViewUtils.hideAllEditButtonsAndShowAllTicks(this.historyViewHolderList);
 //        historyTopBar.getNavigationFrame().setCancelEditLabel();
 //        historyBottomBar.getSelectAllButton().setText(R.string.history_select_all);
 //        navFrame.close();
-//    }
+    }
 
     /**
      * switchFromSelectingToBrowsingMode()
@@ -363,15 +364,15 @@ public final class HistoryRecyclerViewAdapter extends RecyclerView.Adapter<Histo
      * просмотра.
      */
 
-//    public final void switchFromSelectingToBrowsingMode() {
+    public final void switchFromSelectingToBrowsingMode() {
 //        final HistoryTopBar historyTopBar = this.parentActivity.getHistoryTopBar();
 //        final HistoryNavigationFrame navFrame = historyTopBar.getNavigationFrame();
 //        this.adapterMode = BROWSING;
-//        HistoryManagerProvider.THIS.deselectAllHistories();
-//        HistoryViewUtils.showAllEditButtonsAndHideAllTicks(this.historyViewHolderList);
+        HistoryManagerProvider.THIS.deselectAllHistories();
+        HistoryViewUtils.showAllEditButtonsAndHideAllTicks(this.historyViewHolderList);
 //        navFrame.setEditLabel();
 //        navFrame.close();
-//    }
+    }
 
     /**
      * resetHistoryHeadline()
