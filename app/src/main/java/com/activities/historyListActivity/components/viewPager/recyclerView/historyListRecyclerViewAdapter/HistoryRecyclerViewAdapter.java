@@ -336,7 +336,6 @@ public final class HistoryRecyclerViewAdapter extends RecyclerView.Adapter<Histo
             case RENAMING:
                 //Устанавливаем заголовок, который был до переименовывания:
                 this.resetHistoryHeadline();
-
         }
     }
 
@@ -347,13 +346,8 @@ public final class HistoryRecyclerViewAdapter extends RecyclerView.Adapter<Histo
      */
 
     public final void switchFromBrowsingToSelectingMode() {
-//        final HistoryTopBar historyTopBar = this.parentActivity
-//                .getHistoryTopBar();
-//        final HistoryBottomBar historyBottomBar = RepositoryFragment.THIS.getHistoryBottomBar();
-//        final HistoryNavigationFrame navFrame = historyTopBar.getNavigationFrame();
-//        this.adapterMode = SELECTING;
+        this.adapterMode = SELECTING;
         HistoryViewUtils.hideAllEditButtonsAndShowAllTicks(this.historyViewHolderList);
-//        historyTopBar.getNavigationFrame().setCancelEditLabel();
 //        historyBottomBar.getSelectAllButton().setText(R.string.history_select_all);
 //        navFrame.close();
     }

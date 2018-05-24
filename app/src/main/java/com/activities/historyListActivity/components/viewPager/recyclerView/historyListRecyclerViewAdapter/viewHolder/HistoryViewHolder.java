@@ -47,7 +47,6 @@ public final class HistoryViewHolder extends RecyclerView.ViewHolder {
     @Getter
     private TextView textViewDescription;
 
-
     @Getter
     private ImageView historyRepositoryImageView;
 
@@ -103,7 +102,8 @@ public final class HistoryViewHolder extends RecyclerView.ViewHolder {
             HistoryListActivity.THIS.refreshScreen();
         });
         this.historyHeadlineTextEditor.setOnEditorActionListener((textView, actionID, keyEvent) -> {
-            this.parentAdapter.completeHistoryHeaderRenaming(actionID, this.historyHeadlineTextEditor);
+            this.parentAdapter.completeHistoryHeaderRenaming(actionID
+                    , this.historyHeadlineTextEditor);
             HistoryListActivity.THIS.refreshScreen();
             return true;
         });

@@ -75,6 +75,7 @@
                     app:layout_constraintStart_toStartOf="@id/history_indicator_vs_route"
                     app:layout_constraintTop_toTopOf="parent">
 
+                    <!--GoogleMaps-->
                     <!--<fragment-->
                         <!--android:id="@+id/map"-->
                         <!--class="com.google.android.gms.maps.SupportMapFragment"-->
