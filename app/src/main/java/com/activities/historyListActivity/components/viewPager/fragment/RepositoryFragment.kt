@@ -16,16 +16,43 @@ import com.annotations.FuckingStaticSingleton
 import com.historyManagement.provider.HistoryManagerProvider
 import com.historyManagement.utilities.HistoryViewUtils
 import java.util.logging.Logger
+
 @FuckingStaticSingleton
 class RepositoryFragment : Fragment() {
 
     companion object {
-        @SuppressLint("StaticFieldLeak")
-        @JvmField
-        var THIS: RepositoryFragment? = null
         @JvmStatic
         var log = Logger.getLogger(RepositoryFragment::class.java.name)
+
+        var LOCAL: RepositoryFragment? = null
+
+        var CLOUD: RepositoryFragment? = null
+
+        var CURRENT : RepositoryFragment? = null
+
+        var OPPOSITE : RepositoryFragment? = null
+
+        fun PUT_LOCAL_AND_CLOUD_FRAGMENTS(localFragment: RepositoryFragment, cloudFragment: RepositoryFragment) {
+            LOCAL = localFragment
+            CLOUD = cloudFragment
+            CURRENT = localFragment
+            OPPOSITE = cloudFragment
+        }
+
+        fun SWAP_LOCAL_AND_CLOUD() {
+            if (CURRENT === LOCAL){
+                CURRENT = CLOUD
+                OPPOSITE = LOCAL
+            } else {
+                CURRENT = LOCAL
+                OPPOSITE = CLOUD
+            }
+        }
     }
+
+    var rootView: View? = null
+
+    var recyclerView: RecyclerView? = null
 
     var recyclerViewAdapter: HistoryRecyclerViewAdapter? = null
 
@@ -33,25 +60,30 @@ class RepositoryFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?
                               , savedInstanceState: Bundle?): View? {
-        THIS = this
-        val repositoryView = inflater.inflate(R.layout.repository_fragment, container, false)
-        this.init(repositoryView)
-        return repositoryView
+        this.rootView = inflater.inflate(R.layout.repository_fragment, container, false)
+        this.init(this.rootView)
+        return this.rootView
     }
 
-    private fun init(view: View){
+    private fun init(view: View?) {
+        this.descriptionTextView = view?.findViewById(R.id.history_list_activity_text_description)
         this.initRecyclerView(view)
-        this.descriptionTextView = view.findViewById(R.id.history_list_activity_text_description)
     }
 
-    private fun initRecyclerView(view: View) {
-        this.recyclerViewAdapter = HistoryRecyclerViewAdapter(HistoryListActivity.THIS)
+    private fun initRecyclerView(view: View?) {
+        val recyclerViewAdapter = HistoryRecyclerViewAdapter()
+        val recyclerView = view?.findViewById<RecyclerView>(R.id.history_recycler_view)
         //Инициализируем RecyclerView:
-        val recyclerView = view.findViewById<RecyclerView>(R.id.history_recycler_view)
-        recyclerView.setHasFixedSize(true)
-        recyclerView.layoutManager = LinearLayoutManager(HistoryListActivity.THIS)
-        recyclerView.adapter = this.recyclerViewAdapter
-        recyclerView.requestLayout()
+        recyclerView?.setHasFixedSize(true)
+        recyclerView?.layoutManager = LinearLayoutManager(HistoryListActivity.THIS)
+        recyclerView?.adapter = recyclerViewAdapter
+        recyclerView?.setHasFixedSize(true)
+        this.recyclerView = recyclerView
+        this.recyclerViewAdapter = recyclerViewAdapter
+    }
+
+    fun refresh(){
+        this.setDescriptionAboutHistoryVisibility()
     }
 
     /**
@@ -59,7 +91,7 @@ class RepositoryFragment : Fragment() {
      * информацию об окне истории в центре, если нет историй.
      */
 
-    fun setDescriptionAboutHistoryVisibility() {
+    private fun setDescriptionAboutHistoryVisibility() {
         val historyManager = HistoryManagerProvider.THIS?.get()
         //Если список пустой, то вывести информацию:
         val isEmpty = historyManager?.hasHistories()

@@ -4,17 +4,29 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.constraint.ConstraintLayout
+import android.support.design.R.id.container
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.support.v4.view.ViewPager
+import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
+import android.view.View
+import android.view.animation.AnimationUtils
+import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import com.example.starkre.sleepAlertHistory.R
 import com.annotations.FuckingStaticSingleton
 import com.activities.historyListActivity.components.viewPager.adapter.RepositoryPagerAdapter
 import com.activities.historyListActivity.components.viewPager.fragment.RepositoryFragment
 import com.activities.currentHistoryActivity.CurrentHistoryActivity
+import com.activities.historyListActivity.components.viewPager.recyclerView.historyListRecyclerViewAdapter.HistoryRecyclerViewAdapter
+import com.activities.historyListActivity.components.viewPager.recyclerView.historyListRecyclerViewAdapter.mode.AdapterMode
 import com.historyManagement.history.historyData.History
 import com.historyManagement.provider.HistoryManagerProvider
+import com.historyManagement.utilities.HistoryViewUtils
+import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx
+import kotlinx.android.synthetic.main.activity_history_list.*
 import java.util.ArrayList
 import java.util.logging.Logger
 
@@ -33,6 +45,10 @@ class HistoryListActivity : AppCompatActivity() {
 
     var viewPager: ViewPager? = null
 
+    var bottomNavigationView: BottomNavigationViewEx? = null
+
+    var historyOptionsView: RelativeLayout? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         THIS = this
         super.onCreate(savedInstanceState)
@@ -43,11 +59,21 @@ class HistoryListActivity : AppCompatActivity() {
     private fun init() {
         this.initToolbar()
         this.initViewPager()
+        this.initBottomNavigationView()
+        this.initOptionsView()
     }
 
     private fun initToolbar() {
         val toolbar = findViewById<Toolbar>(R.id.toolbar_main)
         this.setSupportActionBar(toolbar)
+    }
+
+    private fun initBottomNavigationView() {
+        this.bottomNavigationView = this.findViewById(R.id.bottom_navigation_view)
+    }
+
+    private fun initOptionsView(){
+        this.historyOptionsView = this.findViewById(R.id.history_options_view)
     }
 
     private fun initViewPager() {
@@ -63,18 +89,20 @@ class HistoryListActivity : AppCompatActivity() {
         this.tabLayout?.addTab(this.tabLayout!!.newTab().setText(titles[1]))
         val fragments = object : ArrayList<Fragment>() {
             init {
-                this.add(RepositoryFragment())
-                this.add(RepositoryFragment())
+                val localFragment = RepositoryFragment()
+                val cloudFragment = RepositoryFragment()
+                this.add(localFragment)
+                this.add(cloudFragment)
+                RepositoryFragment.PUT_LOCAL_AND_CLOUD_FRAGMENTS(localFragment, cloudFragment)
             }
         }
         val fragmentAdapter = RepositoryPagerAdapter(this.supportFragmentManager, fragments, titles)
         this.viewPager?.offscreenPageLimit = 1
         this.viewPager?.adapter = fragmentAdapter
         this.tabLayout?.setupWithViewPager(this.viewPager)
-        this.tabLayout?.setTabsFromPagerAdapter(fragmentAdapter)
+        this.tabLayout?.setTabsFromPagerAdapter(fragmentAdapter) // Знаю, что устарел
         this.viewPager?.addOnPageChangeListener(this.getPageChangeListener())
     }
-
 
     fun goToCurrentHistory(history: History) {
         //Переходим в выбранную историю --->
@@ -91,31 +119,49 @@ class HistoryListActivity : AppCompatActivity() {
         log.info("DATA SIZE: " + analyser.inputDataList.size)
     }
 
+    fun refreshScreen() {
+        this.setBottomNavigationViewVisibility()
+        this.setOptionsViewVisibility()
+        RepositoryFragment.CURRENT?.refresh()
+    }
 
-    fun refreshScreen() {}
+    private fun getPageChangeListener(): ViewPager.OnPageChangeListener = object
+        : ViewPager.OnPageChangeListener {
 
-    private fun getPageChangeListener(): ViewPager.OnPageChangeListener = object : ViewPager.OnPageChangeListener {
-
-        override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-
+        override fun onPageScrolled(position: Int, posOffset: Float, posOffsetPixels: Int) {
+            //Ничего...
         }
 
+        @SuppressLint("PrivateResource")
         override fun onPageSelected(position: Int) {
             //Меняем местами менеджеров:
             HistoryManagerProvider.THIS?.swapLocalAndCloud()
-            //Достаём уже нового менеджера историй:
-            val adapter = RepositoryFragment.THIS?.recyclerViewAdapter
+            RepositoryFragment.SWAP_LOCAL_AND_CLOUD()
+            val currentRepositoryFragment = RepositoryFragment.CURRENT
+            val adapter = currentRepositoryFragment?.recyclerViewAdapter
             //Говорим адаптеру, что данные поменялись, и он перепривязывает холдеры:
             adapter?.notifyDataSetChanged()
-            //Поменяли картинку на кнопке синхронизации:
-            RepositoryFragment.THIS?.setDescriptionAboutHistoryVisibility()
             //Говорим адаптеру, чтобы он переключился в режим просмотра.
             adapter?.switchFromSelectingToBrowsingMode()
             HistoryListActivity.THIS?.refreshScreen()
         }
 
         override fun onPageScrollStateChanged(state: Int) {
-
+            //Ничего...
         }
+    }
+
+    private fun setBottomNavigationViewVisibility(){
+        val adapter = RepositoryFragment.CURRENT?.recyclerViewAdapter
+        val mode = adapter?.adapterMode
+        val isVisible = mode != AdapterMode.SELECTING
+        HistoryViewUtils.setVisibility(isVisible, this.bottomNavigationView)
+    }
+
+    private fun setOptionsViewVisibility(){
+        val adapter = RepositoryFragment.CURRENT?.recyclerViewAdapter
+        val mode = adapter?.adapterMode
+        val isVisible = mode == AdapterMode.SELECTING
+        HistoryViewUtils.setVisibility(isVisible, this.historyOptionsView)
     }
 }

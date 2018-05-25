@@ -28,9 +28,9 @@ class DataAnalyser {
      * отношения в этом интервале.
      */
 
-    var low: Double = 0.toDouble()
+    var low: Double = 0.0
 
-    var medium: Double = 0.toDouble()
+    var medium: Double = 0.0
 
     var high: Double = 0.toDouble()
 

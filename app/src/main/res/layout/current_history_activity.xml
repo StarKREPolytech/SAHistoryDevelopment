@@ -53,8 +53,7 @@
                 android:id="@+id/history_activity_back_image_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:onClick="backToHistoryList"
-                app:srcCompat="@drawable/ic_history_back_image_button" />
+                android:onClick="backToHistoryList" />
 
         </RelativeLayout>
 

@@ -12,6 +12,13 @@
         android:fitsSystemWindows="true"
         android:theme="@style/AppTheme.AppBarOverlay">
 
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tab_layout_main"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/mainAppBar"
+            app:tabIndicatorColor="@color/night_theme_sea_history" />
+
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar_main"
             android:layout_width="match_parent"
@@ -19,13 +26,6 @@
             android:background="@color/mainToolbar"
             app:layout_scrollFlags="scroll|enterAlways"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
-
-        <android.support.design.widget.TabLayout
-            android:id="@+id/tab_layout_main"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/mainAppBar"
-            app:tabIndicatorColor="@color/night_theme_sea_history" />
 
     </android.support.design.widget.AppBarLayout>
 
@@ -36,15 +36,24 @@
         android:layout_marginBottom="100dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-    <include layout="@layout/bottom_navigation_view" />
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="50dp">
 
-    <include
-        android:id="@+id/include"
-        layout="@layout/history_options_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="visible"
-        app:layout_anchor="@+id/view_pager_main"
-        app:layout_anchorGravity="right|center" />
+        <include
+            android:id="@+id/bottom_navigation_view"
+            layout="@layout/bottom_navigation_view" />
+
+        <include
+            android:id="@+id/history_options_view"
+            layout="@layout/history_options_view"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_gravity="bottom"
+            android:visibility="visible" />
+    </RelativeLayout>
+
 
 </android.support.design.widget.CoordinatorLayout>
