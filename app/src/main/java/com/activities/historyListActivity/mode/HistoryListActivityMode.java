@@ -1,4 +1,4 @@
-package com.activities.historyListActivity.components.viewPager.recyclerView.historyListRecyclerViewAdapter.mode;
+package com.activities.historyListActivity.mode;
 
 /**
  * @author Игорь Гулькин 27.04.2018
@@ -9,6 +9,6 @@ package com.activities.historyListActivity.components.viewPager.recyclerView.his
  * 3.) RENAMING - переименовывание истории.
  */
 
-public enum AdapterMode {
-    BROWSING, SELECTING, RENAMING
+public enum HistoryListActivityMode {
+    BROWSING, SELECTING, RENAMING, SHOW_OPTIONS
 }

@@ -16,8 +16,8 @@ import com.activities.historyListActivity.components.viewPager.recyclerView.hist
 import com.activities.historyListActivity.components.viewPager.recyclerView.historyListRecyclerViewAdapter.historyConfigurations.FilterType
 import com.activities.historyListActivity.components.viewPager.recyclerView.historyListRecyclerViewAdapter.historyConfigurations.HistoryAction
 import com.activities.historyListActivity.components.viewPager.recyclerView.historyListRecyclerViewAdapter.historyConfigurations.HistoryFilter
-import com.activities.historyListActivity.components.viewPager.recyclerView.historyListRecyclerViewAdapter.mode.AdapterMode
 import com.activities.historyListActivity.components.viewPager.recyclerView.historyListRecyclerViewAdapter.viewHolder.HistoryViewHolder
+import com.activities.historyListActivity.mode.HistoryListActivityMode
 import com.example.starkre.sleepAlertHistory.R
 import com.historyManagement.history.historyData.History
 import com.historyManagement.historyManagment.HistoryManager
@@ -45,12 +45,6 @@ class HistoryRecyclerViewAdapter : RecyclerView.Adapter<HistoryViewHolder>() {
     }
 
     /**
-     * Изначально адаптер находится в режиме просмотра историй.
-     */
-
-    private val START_ADAPTER_MODE = AdapterMode.BROWSING
-
-    /**
      * 1.) THIS - провайдер менеджеров историй;
      *
      *
@@ -73,8 +67,6 @@ class HistoryRecyclerViewAdapter : RecyclerView.Adapter<HistoryViewHolder>() {
      * позволяет динамически устанавливать, какие действия
      * и с какими историями должен работать адаптер.
      */
-
-    var adapterMode: AdapterMode? = START_ADAPTER_MODE
 
     val historyViewHolderList: MutableList<HistoryViewHolder> = ArrayList()
 
@@ -136,10 +128,11 @@ class HistoryRecyclerViewAdapter : RecyclerView.Adapter<HistoryViewHolder>() {
             currentHistoryManager.getLabel()
         }
         repositoryButton?.setImageResource(labelID)
-        when (this.adapterMode) {
-            AdapterMode.BROWSING -> HistoryViewUtils.showEditButtonAndHideTick(holder)
-            AdapterMode.SELECTING -> HistoryViewUtils.hideEditButtonAndShowTick(holder)
-            AdapterMode.RENAMING -> HistoryViewUtils.showEditButtonAndHideTick(holder)
+        when (HistoryListActivity.THIS?.activityMode) {
+            HistoryListActivityMode.BROWSING -> HistoryViewUtils.showEditButtonAndHideTick(holder)
+            HistoryListActivityMode.SELECTING -> HistoryViewUtils.hideEditButtonAndShowTick(holder)
+            HistoryListActivityMode.RENAMING -> HistoryViewUtils.showEditButtonAndHideTick(holder)
+            else -> {}
         }
     }
 
@@ -170,7 +163,7 @@ class HistoryRecyclerViewAdapter : RecyclerView.Adapter<HistoryViewHolder>() {
     private fun setHistoryTextEditor(history: History, holder: HistoryViewHolder) {
         val editText = holder.historyHeadlineTextEditor
         val headlineText = holder.textViewHeadline
-        if (this.adapterMode == AdapterMode.RENAMING) {
+        if (HistoryListActivity.THIS?.activityMode == HistoryListActivityMode.RENAMING) {
             val historyManager = HistoryManagerProvider.THIS!!.get()
             val hasOneSelectedHistory = historyManager!!.hasOneSelectedHistory()
             val isSelectedHistory = historyManager.isSelectedHistory(history)
@@ -212,7 +205,7 @@ class HistoryRecyclerViewAdapter : RecyclerView.Adapter<HistoryViewHolder>() {
      */
 
     fun renameSelectedHistory() {
-        this.adapterMode = AdapterMode.RENAMING
+        HistoryListActivity.THIS?.activityMode = HistoryListActivityMode.RENAMING
         val history = HistoryManagerProvider.THIS!!.get()!!.selectedHistory
         val holder = this.historyVsHolderMap[history]
         holder?.textViewHeadline?.visibility = View.INVISIBLE
@@ -253,11 +246,11 @@ class HistoryRecyclerViewAdapter : RecyclerView.Adapter<HistoryViewHolder>() {
 
     fun handleOnHistoryClick(imageViewTick: ImageView, currentPosition: Int) {
         val historyManager = HistoryManagerProvider.THIS!!.get()
-        when (this.adapterMode) {
-            AdapterMode.BROWSING ->
+        when (HistoryListActivity.THIS?.activityMode) {
+            HistoryListActivityMode.BROWSING ->
                 //Идем в историю --->
                 HistoryListActivity.THIS!!.goToCurrentHistory(historyManager!!.getHistory(currentPosition))
-            AdapterMode.SELECTING -> {
+            HistoryListActivityMode.SELECTING -> {
                 //Если история не выбрана, то выбираем и ставим галочку.
                 log.info("CURRENT POSITION: $currentPosition")
                 if (imageViewTick.visibility == View.INVISIBLE) {
@@ -269,7 +262,7 @@ class HistoryRecyclerViewAdapter : RecyclerView.Adapter<HistoryViewHolder>() {
                     imageViewTick.visibility = View.INVISIBLE
                 }
             }
-            AdapterMode.RENAMING -> {
+            HistoryListActivityMode.RENAMING -> {
                 //Устанавливаем заголовок, который был до переименовывания:
                 val history = historyManager!!.selectedHistory
                 this.setNewHeadlineInHistory(history!!.headline)
@@ -282,18 +275,19 @@ class HistoryRecyclerViewAdapter : RecyclerView.Adapter<HistoryViewHolder>() {
      */
 
     fun changeMode(imageViewTick: ImageView, currentPosition: Int) {
-        when (this.adapterMode) {
-            AdapterMode.BROWSING -> {
+        when (HistoryListActivity.THIS?.activityMode) {
+            HistoryListActivityMode.BROWSING -> {
                 this.switchFromBrowsingToSelectingMode()
                 HistoryManagerProvider.THIS!!.selectHistory(currentPosition)
                 imageViewTick.visibility = View.VISIBLE
             }
-            AdapterMode.SELECTING ->
+            HistoryListActivityMode.SELECTING ->
                 //Переходим в режим просмотра:
                 this.switchFromSelectingToBrowsingMode()
-            AdapterMode.RENAMING ->
+            HistoryListActivityMode.RENAMING ->
                 //Устанавливаем заголовок, который был до переименовывания:
                 this.resetHistoryHeadline()
+            else -> {}
         }
     }
 
@@ -304,7 +298,7 @@ class HistoryRecyclerViewAdapter : RecyclerView.Adapter<HistoryViewHolder>() {
      */
 
     fun switchFromBrowsingToSelectingMode() {
-        this.adapterMode = AdapterMode.SELECTING
+        HistoryListActivity.THIS?.activityMode = HistoryListActivityMode.SELECTING
         HistoryViewUtils.hideAllEditButtonsAndShowAllTicks(this.historyViewHolderList)
         //        historyBottomBar.getSelectAllButton().setText(R.string.history_select_all);
         //        navFrame.close();
@@ -428,7 +422,7 @@ class HistoryRecyclerViewAdapter : RecyclerView.Adapter<HistoryViewHolder>() {
             //Над переименованной кнопкой ставим галочку:
             holder?.imageViewTick?.visibility = View.VISIBLE
             //Переходим в режим выбора:
-            this.adapterMode = AdapterMode.SELECTING
+            HistoryListActivity.THIS?.activityMode = HistoryListActivityMode.SELECTING
         }
     }
 

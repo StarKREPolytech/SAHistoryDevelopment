@@ -75,7 +75,7 @@ class HistoryViewHolder(itemView: View, private val parentAdapter: HistoryRecycl
             HistoryListActivity.THIS!!.refreshScreen()
         })
         this.itemView.setOnLongClickListener({
-            this.parentAdapter.changeMode(this.imageViewTick!!, this.currentPosition)
+            HistoryListActivity.THIS!!.showOptionsView()
             HistoryListActivity.THIS!!.refreshScreen()
             true
         })

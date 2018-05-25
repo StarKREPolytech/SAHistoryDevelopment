@@ -4,29 +4,21 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.support.constraint.ConstraintLayout
-import android.support.design.R.id.container
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.support.v4.view.ViewPager
-import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
-import android.view.View
-import android.view.animation.AnimationUtils
-import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import com.example.starkre.sleepAlertHistory.R
 import com.annotations.FuckingStaticSingleton
 import com.activities.historyListActivity.components.viewPager.adapter.RepositoryPagerAdapter
 import com.activities.historyListActivity.components.viewPager.fragment.RepositoryFragment
 import com.activities.currentHistoryActivity.CurrentHistoryActivity
-import com.activities.historyListActivity.components.viewPager.recyclerView.historyListRecyclerViewAdapter.HistoryRecyclerViewAdapter
-import com.activities.historyListActivity.components.viewPager.recyclerView.historyListRecyclerViewAdapter.mode.AdapterMode
+import com.activities.historyListActivity.mode.HistoryListActivityMode
 import com.historyManagement.history.historyData.History
 import com.historyManagement.provider.HistoryManagerProvider
 import com.historyManagement.utilities.HistoryViewUtils
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx
-import kotlinx.android.synthetic.main.activity_history_list.*
 import java.util.ArrayList
 import java.util.logging.Logger
 
@@ -40,6 +32,15 @@ class HistoryListActivity : AppCompatActivity() {
         @JvmStatic
         val log = Logger.getLogger(HistoryListActivity::class.java.name)
     }
+
+
+    /**
+     * Изначально адаптер находится в режиме просмотра историй.
+     */
+
+    private val START_ACTIVITY_MODE = HistoryListActivityMode.BROWSING
+
+    var activityMode: HistoryListActivityMode? = START_ACTIVITY_MODE
 
     var tabLayout: TabLayout? = null
 
@@ -72,7 +73,7 @@ class HistoryListActivity : AppCompatActivity() {
         this.bottomNavigationView = this.findViewById(R.id.bottom_navigation_view)
     }
 
-    private fun initOptionsView(){
+    private fun initOptionsView() {
         this.historyOptionsView = this.findViewById(R.id.history_options_view)
     }
 
@@ -151,17 +152,26 @@ class HistoryListActivity : AppCompatActivity() {
         }
     }
 
-    private fun setBottomNavigationViewVisibility(){
-        val adapter = RepositoryFragment.CURRENT?.recyclerViewAdapter
-        val mode = adapter?.adapterMode
-        val isVisible = mode != AdapterMode.SELECTING
+    private fun setBottomNavigationViewVisibility() {
+        val isVisible = this.activityMode != HistoryListActivityMode.SHOW_OPTIONS
         HistoryViewUtils.setVisibility(isVisible, this.bottomNavigationView)
     }
 
-    private fun setOptionsViewVisibility(){
-        val adapter = RepositoryFragment.CURRENT?.recyclerViewAdapter
-        val mode = adapter?.adapterMode
-        val isVisible = mode == AdapterMode.SELECTING
+    private fun setOptionsViewVisibility() {
+        val isVisible = this.activityMode == HistoryListActivityMode.SHOW_OPTIONS
         HistoryViewUtils.setVisibility(isVisible, this.historyOptionsView)
+    }
+
+    fun showOptionsView() {
+        this.activityMode = HistoryListActivityMode.SHOW_OPTIONS
+    }
+
+    override fun onBackPressed() {
+        if (this.activityMode == HistoryListActivityMode.SHOW_OPTIONS) {
+            this.activityMode = HistoryListActivityMode.BROWSING
+        } else {
+            super.onBackPressed()
+        }
+        this.refreshScreen()
     }
 }
