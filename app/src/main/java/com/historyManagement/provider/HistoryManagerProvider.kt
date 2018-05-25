@@ -3,9 +3,9 @@ package com.historyManagement.provider
 import com.activities.historyListActivity.components.viewPager.recyclerView.historyListRecyclerViewAdapter.HistoryRecyclerViewAdapter
 import com.annotations.FuckingStaticSingleton
 import com.historyManagement.history.historyData.History
-import com.historyManagement.historyManagment.HistoryManager
-import com.historyManagement.historyManagment.implementations.CloudHistoryManager
-import com.historyManagement.historyManagment.implementations.LocalHistoryManager
+import com.historyManagement.historyManagement.HistoryManager
+import com.historyManagement.historyManagement.implementations.CloudHistoryManager
+import com.historyManagement.historyManagement.implementations.LocalHistoryManager
 import lombok.extern.slf4j.Slf4j
 import java.util.*
 

@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
  *         <p>
  *         Удобный интерфейс, если Вы хотите
  *         обрабатывать события WarningAnalyser
- *         {@link com.example.starkre.myapplication.historyManagement.history.historyData.DataAnalyser.WarningAnalyser}.
  */
 
 public interface WarningCallBack {

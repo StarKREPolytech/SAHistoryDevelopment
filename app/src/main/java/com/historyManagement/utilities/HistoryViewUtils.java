@@ -44,15 +44,15 @@ public final class HistoryViewUtils {
         holder.getImageViewTickOff().setVisibility(View.INVISIBLE);
     }
 
-    public static void hideAllEditButtonsAndShowAllTicks(
+    public static void hideAllHistoryLabelsAndShowAllCells(
             final List<HistoryViewHolder> historyViewHolderList){
         for (final HistoryViewHolder holder: historyViewHolderList){
-            hideEditButtonAndShowTick(holder);
+            hideHistoryLabelAndShowCell(holder);
         }
     }
 
-    public static void hideEditButtonAndShowTick(final HistoryViewHolder holder){
-        holder.getHistoryRepositoryImageView().setVisibility(View.INVISIBLE);
+    public static void hideHistoryLabelAndShowCell(final HistoryViewHolder holder){
+        holder.getLabelImageView().setVisibility(View.INVISIBLE);
         holder.getImageViewTickOff().setVisibility(View.VISIBLE);
     }
 
@@ -64,14 +64,14 @@ public final class HistoryViewUtils {
     }
 
     public static void hideEditButtonAndSelectTick(final HistoryViewHolder holder) {
-        hideEditButtonAndShowTick(holder);
+        hideHistoryLabelAndShowCell(holder);
         holder.getImageViewTick().setVisibility(View.VISIBLE);
     }
 
     public static void hideAllEditButtonsAndShowAllEmptyTicks(
             final List<HistoryViewHolder> historyViewHolderList) {
         for (final HistoryViewHolder holder : historyViewHolderList){
-            hideEditButtonAndShowTick(holder);
+            hideHistoryLabelAndShowCell(holder);
             holder.getImageViewTick().setVisibility(View.INVISIBLE);
         }
     }
@@ -87,7 +87,7 @@ public final class HistoryViewUtils {
      *
      * @param word -  из метода
      *             getRepositoryHeadlinePostfix()
-     *             абстрактного класса {@link HistoryManager}.
+     *             абстрактного класса {@link com.historyManagement.historyManagement.HistoryManager}.
      * @return слово во мн. числе.
      */
 

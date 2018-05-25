@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:background="@color/history_card_color">
+
+    <ImageView
+        android:id="@+id/history_delete_image_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="10dp"
+        android:onClick="historySelectionModeOnClick"
+        app:srcCompat="@drawable/ic_history_selecting_mode_image_view"
+        />
+
+    <!--<ImageView-->
+        <!--android:id="@+id/history_sort_histories_image_view"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignParentStart="true"-->
+        <!--android:layout_alignParentTop="true"-->
+        <!--android:layout_marginStart="100dp"-->
+        <!--android:layout_marginTop="10dp"-->
+        <!--app:srcCompat="@drawable/ic_history_sort_histories_image_view" />-->
+
+    <!--<ImageView-->
+        <!--android:id="@+id/history_sync_all_histories_image_view"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginStart="175dp"-->
+        <!--android:layout_marginTop="10dp"-->
+        <!--app:srcCompat="@drawable/ic_history_sync_all_histories_image_view"/>-->
+
+</RelativeLayout>

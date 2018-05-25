@@ -10,7 +10,7 @@ import android.view.View
 import android.widget.TextView
 import com.example.starkre.sleepAlertHistory.R
 import com.activities.historyListActivity.HistoryListActivity
-import com.annotations.Provided
+import com.annotations.XMLProvided
 import com.historyManagement.history.historyData.DataAnalyser
 import com.historyManagement.provider.HistoryManagerProvider
 import com.github.mikephil.charting.charts.PieChart
@@ -104,7 +104,6 @@ class CurrentHistoryActivity : AppCompatActivity() {
                 , extractColor(R.color.history_red)
                 , extractColor(R.color.history_dark_red))
         pieDataSet.formSize = 17f
-
         return object : PieData(pieDataSet) {
             init {
                 this.setValueTextColor(Color.WHITE)
@@ -133,8 +132,9 @@ class CurrentHistoryActivity : AppCompatActivity() {
         legend?.form = Legend.LegendForm.SQUARE
     }
 
-    @Provided(layout = "activity_history.xml")
+    @XMLProvided(layout = "activity_history.xml")
     fun backToHistoryList(view: View) {
         this.startActivity(Intent(this, HistoryListActivity::class.java))
+        log.info("BBBBBB")
     }
 }

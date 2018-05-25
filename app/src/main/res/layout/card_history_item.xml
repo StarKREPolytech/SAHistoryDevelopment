@@ -47,9 +47,8 @@
                 android:id="@+id/history_card_cell_image_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
+                android:layout_alignStart="@+id/history_card_label_image_view"
                 android:layout_centerVertical="true"
-                android:layout_marginEnd="16dp"
                 android:background="@color/history_card_color"
                 android:visibility="invisible"
                 app:srcCompat="@drawable/ic_history_card_cell_image_view" />
@@ -58,9 +57,8 @@
                 android:id="@+id/history_card_tick_image_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
+                android:layout_alignStart="@+id/history_card_cell_image_view"
                 android:layout_centerVertical="true"
-                android:layout_marginEnd="16dp"
                 android:background="@color/history_card_color"
                 android:visibility="invisible"
                 app:srcCompat="@drawable/ic_history_card_tick_image_view" />

@@ -20,9 +20,9 @@ import com.activities.historyListActivity.components.viewPager.recyclerView.hist
 import com.activities.historyListActivity.mode.HistoryListActivityMode
 import com.example.starkre.sleepAlertHistory.R
 import com.historyManagement.history.historyData.History
-import com.historyManagement.historyManagment.HistoryManager
-import com.historyManagement.historyManagment.implementations.CloudHistoryManager
-import com.historyManagement.historyManagment.implementations.LocalHistoryManager
+import com.historyManagement.historyManagement.HistoryManager
+import com.historyManagement.historyManagement.implementations.CloudHistoryManager
+import com.historyManagement.historyManagement.implementations.LocalHistoryManager
 import com.historyManagement.provider.HistoryManagerProvider
 import com.historyManagement.utilities.HistoryViewUtils
 import es.dmoral.toasty.Toasty
@@ -130,9 +130,10 @@ class HistoryRecyclerViewAdapter : RecyclerView.Adapter<HistoryViewHolder>() {
         repositoryButton?.setImageResource(labelID)
         when (HistoryListActivity.THIS?.activityMode) {
             HistoryListActivityMode.BROWSING -> HistoryViewUtils.showEditButtonAndHideTick(holder)
-            HistoryListActivityMode.SELECTING -> HistoryViewUtils.hideEditButtonAndShowTick(holder)
+            HistoryListActivityMode.SELECTING -> HistoryViewUtils.hideHistoryLabelAndShowCell(holder)
             HistoryListActivityMode.RENAMING -> HistoryViewUtils.showEditButtonAndHideTick(holder)
-            else -> {}
+            else -> {
+            }
         }
     }
 
@@ -287,7 +288,8 @@ class HistoryRecyclerViewAdapter : RecyclerView.Adapter<HistoryViewHolder>() {
             HistoryListActivityMode.RENAMING ->
                 //Устанавливаем заголовок, который был до переименовывания:
                 this.resetHistoryHeadline()
-            else -> {}
+            else -> {
+            }
         }
     }
 
@@ -299,9 +301,8 @@ class HistoryRecyclerViewAdapter : RecyclerView.Adapter<HistoryViewHolder>() {
 
     fun switchFromBrowsingToSelectingMode() {
         HistoryListActivity.THIS?.activityMode = HistoryListActivityMode.SELECTING
-        HistoryViewUtils.hideAllEditButtonsAndShowAllTicks(this.historyViewHolderList)
+        HistoryViewUtils.hideAllHistoryLabelsAndShowAllCells(this.historyViewHolderList)
         //        historyBottomBar.getSelectAllButton().setText(R.string.history_select_all);
-        //        navFrame.close();
     }
 
     /**
@@ -418,7 +419,7 @@ class HistoryRecyclerViewAdapter : RecyclerView.Adapter<HistoryViewHolder>() {
             //InputMethodManager точно не null:
             inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
             //Прячем все кнопки "Редактировать":
-            HistoryViewUtils.hideAllEditButtonsAndShowAllTicks(this.historyViewHolderList)
+            HistoryViewUtils.hideAllHistoryLabelsAndShowAllCells(this.historyViewHolderList)
             //Над переименованной кнопкой ставим галочку:
             holder?.imageViewTick?.visibility = View.VISIBLE
             //Переходим в режим выбора:

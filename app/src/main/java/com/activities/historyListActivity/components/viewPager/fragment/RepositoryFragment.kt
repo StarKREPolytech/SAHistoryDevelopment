@@ -3,6 +3,7 @@ package com.activities.historyListActivity.components.viewPager.fragment
 import android.annotation.SuppressLint
 
 import android.os.Bundle
+import android.os.IInterface
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -12,6 +13,7 @@ import android.view.ViewGroup
 import com.example.starkre.sleepAlertHistory.R
 import com.activities.historyListActivity.HistoryListActivity
 import com.activities.historyListActivity.components.viewPager.recyclerView.historyListRecyclerViewAdapter.HistoryRecyclerViewAdapter
+import com.activities.historyListActivity.components.viewPager.recyclerView.historyListRecyclerViewAdapter.historyConfigurations.HistoryAction
 import com.annotations.FuckingStaticSingleton
 import com.historyManagement.provider.HistoryManagerProvider
 import com.historyManagement.utilities.HistoryViewUtils

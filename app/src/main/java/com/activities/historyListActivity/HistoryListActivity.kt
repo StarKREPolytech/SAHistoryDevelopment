@@ -8,6 +8,8 @@ import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.support.v4.view.ViewPager
 import android.support.v7.widget.Toolbar
+import android.view.View
+import android.widget.ImageView
 import android.widget.RelativeLayout
 import com.example.starkre.sleepAlertHistory.R
 import com.annotations.FuckingStaticSingleton
@@ -15,6 +17,7 @@ import com.activities.historyListActivity.components.viewPager.adapter.Repositor
 import com.activities.historyListActivity.components.viewPager.fragment.RepositoryFragment
 import com.activities.currentHistoryActivity.CurrentHistoryActivity
 import com.activities.historyListActivity.mode.HistoryListActivityMode
+import com.annotations.XMLProvided
 import com.historyManagement.history.historyData.History
 import com.historyManagement.provider.HistoryManagerProvider
 import com.historyManagement.utilities.HistoryViewUtils
@@ -33,7 +36,6 @@ class HistoryListActivity : AppCompatActivity() {
         val log = Logger.getLogger(HistoryListActivity::class.java.name)
     }
 
-
     /**
      * Изначально адаптер находится в режиме просмотра историй.
      */
@@ -46,9 +48,9 @@ class HistoryListActivity : AppCompatActivity() {
 
     var viewPager: ViewPager? = null
 
-    var bottomNavigationView: BottomNavigationViewEx? = null
+    var bottomNavigationBar: BottomNavigationViewEx? = null
 
-    var historyOptionsView: RelativeLayout? = null
+    var optionBar = OptionBar()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         THIS = this
@@ -61,7 +63,7 @@ class HistoryListActivity : AppCompatActivity() {
         this.initToolbar()
         this.initViewPager()
         this.initBottomNavigationView()
-        this.initOptionsView()
+        this.optionBar.initOptionsBar()
     }
 
     private fun initToolbar() {
@@ -70,11 +72,35 @@ class HistoryListActivity : AppCompatActivity() {
     }
 
     private fun initBottomNavigationView() {
-        this.bottomNavigationView = this.findViewById(R.id.bottom_navigation_view)
+        this.bottomNavigationBar = this.findViewById(R.id.bottom_navigation_bar)
     }
 
-    private fun initOptionsView() {
-        this.historyOptionsView = this.findViewById(R.id.history_options_view)
+    inner class OptionBar {
+
+        var historyOptionRelativeLayout: RelativeLayout? = null
+
+        private var historySelectingModeImageView: ImageView? = null
+
+        private var historySortHistoriesImageView: ImageView? = null
+
+        private var historySyncAllHistoriesImageView: ImageView? = null
+
+        internal fun initOptionsBar() {
+            this.historyOptionRelativeLayout = findViewById(R.id.history_options_bar)
+            this.historySelectingModeImageView = findViewById(R.id
+                    .history_selecting_mode_image_view)
+            this.historySortHistoriesImageView = findViewById(R.id
+                    .history_sort_histories_image_view)
+            this.historySyncAllHistoriesImageView = findViewById(R.id
+                    .history_sync_all_histories_image_view)
+        }
+    }
+
+    @XMLProvided(layout = "history_options_view.xml")
+    fun historySelectionModeOnClick(unused: View) {
+        RepositoryFragment.CURRENT?.recyclerViewAdapter?.switchFromBrowsingToSelectingMode()
+        RepositoryFragment.OPPOSITE?.recyclerViewAdapter?.switchFromBrowsingToSelectingMode()
+        this.refreshScreen()
     }
 
     private fun initViewPager() {
@@ -153,17 +179,22 @@ class HistoryListActivity : AppCompatActivity() {
     }
 
     private fun setBottomNavigationViewVisibility() {
-        val isVisible = this.activityMode != HistoryListActivityMode.SHOW_OPTIONS
-        HistoryViewUtils.setVisibility(isVisible, this.bottomNavigationView)
+        val isVisible = this.activityMode == HistoryListActivityMode.BROWSING
+        HistoryViewUtils.setVisibility(isVisible, this.bottomNavigationBar)
     }
 
     private fun setOptionsViewVisibility() {
         val isVisible = this.activityMode == HistoryListActivityMode.SHOW_OPTIONS
-        HistoryViewUtils.setVisibility(isVisible, this.historyOptionsView)
+        HistoryViewUtils.setVisibility(isVisible, this.optionBar.historyOptionRelativeLayout)
     }
 
     fun showOptionsView() {
-        this.activityMode = HistoryListActivityMode.SHOW_OPTIONS
+        if (this.activityMode == HistoryListActivityMode.SHOW_OPTIONS) {
+            this.activityMode = HistoryListActivityMode.BROWSING
+        } else {
+            this.activityMode = HistoryListActivityMode.SHOW_OPTIONS
+        }
+        this.refreshScreen()
     }
 
     override fun onBackPressed() {
