@@ -7,15 +7,15 @@
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:layout_margin="5dp"
-        android:background="@color/night_theme_blue_history"
+        android:layout_height="70dp"
+        android:layout_marginBottom="3dp"
         app:cardBackgroundColor="@color/history_card_color">
 
         <RelativeLayout
             android:id="@+id/history_card_relative_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="@color/history_card_color">
 
             <TextView
                 android:id="@+id/history_card_headline"
@@ -25,6 +25,7 @@
                 android:layout_alignParentTop="true"
                 android:layout_marginStart="64dp"
                 android:layout_marginTop="10dp"
+                android:background="@color/history_card_color"
                 android:text="Рубцовск - Омск"
                 android:textColor="@color/white"
                 android:textSize="16sp" />
@@ -37,6 +38,7 @@
                 android:layout_alignParentStart="true"
                 android:layout_marginBottom="8dp"
                 android:layout_marginStart="64dp"
+                android:background="@color/history_card_color"
                 android:text="19.05.2018 8 ч 17 мин, 544.8 км"
                 android:textColor="@color/white"
                 android:textSize="10dp" />
@@ -48,6 +50,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:layout_marginEnd="16dp"
+                android:background="@color/history_card_color"
                 android:visibility="invisible"
                 app:srcCompat="@drawable/ic_history_card_cell_image_view" />
 
@@ -58,6 +61,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:layout_marginEnd="16dp"
+                android:background="@color/history_card_color"
                 android:visibility="invisible"
                 app:srcCompat="@drawable/ic_history_card_tick_image_view" />
 
@@ -68,6 +72,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:layout_marginEnd="16dp"
+                android:background="@color/history_card_color"
                 app:srcCompat="@drawable/history_local_repository_label_image_view" />
 
             <ImageView
@@ -77,6 +82,7 @@
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
                 android:layout_marginStart="16dp"
+                android:background="@color/history_card_color"
                 app:srcCompat="@drawable/ic_history_card_label_image_view" />
 
 
@@ -86,6 +92,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_alignStart="@+id/history_card_headline"
+                android:background="@color/history_card_color"
                 android:hint="@string/put_new_history_name"
                 android:imeOptions="actionDone"
                 android:inputType="text"

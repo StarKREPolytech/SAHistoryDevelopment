@@ -130,16 +130,12 @@ class HistoryRecyclerViewAdapter : RecyclerView.Adapter<HistoryViewHolder>() {
         //Устанавливаем GUI для синхронизированной / несинхронизированной истории:
         val repositoryButton = holder.historyRepositoryImageView
         val labelID: Int
-        val colorID: Int
-        if (HistoryManagerProvider.THIS!!.isSynchronizedHistory(history)) {
-            labelID = currentHistoryManager.getSynchronizedLabel()
-            colorID = currentHistoryManager.getSynchronizedColor()
+        labelID = if (HistoryManagerProvider.THIS!!.isSynchronizedHistory(history)) {
+            currentHistoryManager.getSynchronizedLabel()
         } else {
-            labelID = currentHistoryManager.getLabel()
-            colorID = currentHistoryManager.getColor()
+            currentHistoryManager.getLabel()
         }
         repositoryButton?.setImageResource(labelID)
-        holder.labelImageView?.setBackgroundResource(colorID)
         when (this.adapterMode) {
             AdapterMode.BROWSING -> HistoryViewUtils.showEditButtonAndHideTick(holder)
             AdapterMode.SELECTING -> HistoryViewUtils.hideEditButtonAndShowTick(holder)

@@ -12,13 +12,6 @@
         android:fitsSystemWindows="true"
         android:theme="@style/AppTheme.AppBarOverlay">
 
-        <android.support.design.widget.TabLayout
-            android:id="@+id/tab_layout_main"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/mainAppBar"
-            app:tabIndicatorColor="@color/night_theme_sea_history" />
-
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar_main"
             android:layout_width="match_parent"
@@ -27,18 +20,26 @@
             app:layout_scrollFlags="scroll|enterAlways"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tab_layout_main"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/mainAppBar"
+            app:tabIndicatorColor="@color/night_theme_sea_history" />
+
     </android.support.design.widget.AppBarLayout>
 
     <android.support.v4.view.ViewPager
         android:id="@+id/view_pager_main"
         android:layout_width="match_parent"
-        android:layout_height="411dp"
+        android:layout_height="match_parent"
         android:layout_marginBottom="100dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="50dp">
+        android:layout_height="50dp"
+        android:layout_gravity="bottom|center">
 
         <include
             android:id="@+id/bottom_navigation_view"

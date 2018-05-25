@@ -23,4 +23,11 @@
         android:layout_marginTop="10dp"
         app:srcCompat="@drawable/ic_history_sort_histories_image_view" />
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="175dp"
+        android:layout_marginTop="10dp"
+        app:srcCompat="@drawable/ic_history_sync_all_histories_image_view"/>
+
 </RelativeLayout>
