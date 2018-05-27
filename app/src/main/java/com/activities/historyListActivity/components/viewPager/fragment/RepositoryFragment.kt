@@ -3,8 +3,8 @@ package com.activities.historyListActivity.components.viewPager.fragment
 import android.annotation.SuppressLint
 
 import android.os.Bundle
-import android.os.IInterface
 import android.support.v4.app.Fragment
+import android.support.v4.widget.NestedScrollView
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -13,10 +13,7 @@ import android.view.ViewGroup
 import com.example.starkre.sleepAlertHistory.R
 import com.activities.historyListActivity.HistoryListActivity
 import com.activities.historyListActivity.components.viewPager.recyclerView.historyListRecyclerViewAdapter.HistoryRecyclerViewAdapter
-import com.activities.historyListActivity.components.viewPager.recyclerView.historyListRecyclerViewAdapter.historyConfigurations.HistoryAction
 import com.annotations.FuckingStaticSingleton
-import com.historyManagement.provider.HistoryManagerProvider
-import com.historyManagement.utilities.HistoryViewUtils
 import java.util.logging.Logger
 
 @FuckingStaticSingleton
@@ -33,10 +30,10 @@ class RepositoryFragment : Fragment() {
         var CLOUD: RepositoryFragment? = null
 
         @SuppressLint("StaticFieldLeak")
-        var CURRENT : RepositoryFragment? = null
+        var CURRENT: RepositoryFragment? = null
 
         @SuppressLint("StaticFieldLeak")
-        var OPPOSITE : RepositoryFragment? = null
+        var OPPOSITE: RepositoryFragment? = null
 
         fun putLocalAndCloudFragments(localFragment: RepositoryFragment
                                       , cloudFragment: RepositoryFragment) {
@@ -47,7 +44,7 @@ class RepositoryFragment : Fragment() {
         }
 
         fun swapLocalAndCloud() {
-            if (CURRENT === LOCAL){
+            if (CURRENT === LOCAL) {
                 CURRENT = CLOUD
                 OPPOSITE = LOCAL
             } else {
@@ -57,7 +54,7 @@ class RepositoryFragment : Fragment() {
         }
     }
 
-    var rootView: View? = null
+    var nestedScrollView: NestedScrollView? = null
 
     var recyclerView: RecyclerView? = null
 
@@ -65,28 +62,28 @@ class RepositoryFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?
                               , savedInstanceState: Bundle?): View? {
-        this.rootView = inflater.inflate(R.layout.repository_fragment, container, false)
-        this.init(this.rootView)
-        return this.rootView
+        this.nestedScrollView = inflater.inflate(R.layout.repository_fragment, container, false)
+                as NestedScrollView?
+        this.init()
+        return this.nestedScrollView
     }
 
-    private fun init(view: View?) {
-        this.initRecyclerView(view)
+    private fun init() {
+        this.initRecyclerView()
     }
 
-    private fun initRecyclerView(view: View?) {
+    private fun initRecyclerView() {
         val recyclerViewAdapter = HistoryRecyclerViewAdapter()
-        val recyclerView = view?.findViewById<RecyclerView>(R.id.history_recycler_view)
+        val recyclerView = nestedScrollView?.findViewById<RecyclerView>(R.id.history_recycler_view)
         //Инициализируем RecyclerView:
         recyclerView?.setHasFixedSize(true)
-        recyclerView?.layoutManager = LinearLayoutManager(HistoryListActivity.THIS)
+        recyclerView?.layoutManager = LinearLayoutManager(this.context)
         recyclerView?.adapter = recyclerViewAdapter
-        recyclerView?.setHasFixedSize(true)
         this.recyclerView = recyclerView
         this.recyclerViewAdapter = recyclerViewAdapter
     }
 
-    fun refresh(){
-//        this.recyclerViewAdapter?.notifyDataSetChanged()
+    fun refresh() {
+
     }
 }

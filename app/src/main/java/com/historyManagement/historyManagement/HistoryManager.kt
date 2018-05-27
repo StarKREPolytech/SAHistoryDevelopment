@@ -41,9 +41,9 @@ abstract class HistoryManager {
      * в процессе редактирования.
      */
 
-    val histories: MutableList<History> = ArrayList()
+    val histories: MutableList<History> = mutableListOf()
 
-    val selectedHistories: Set<History> = HashSet()
+    val selectedHistories: MutableSet<History> = mutableSetOf()
 
     var selectedHistory: History? = null
 
@@ -60,7 +60,7 @@ abstract class HistoryManager {
     @Temporary
     private fun generateHistories() {
         val times = ЗАХОТЕЛ_ТАКОЙ_РАНДОМ_НА_ИСТОРИИ()
-        for (i in 0 until times) {
+        for (i in 0..times) {
             val history = History()
             history.headline = "History: " + (times - i)
             this.histories.add(history)

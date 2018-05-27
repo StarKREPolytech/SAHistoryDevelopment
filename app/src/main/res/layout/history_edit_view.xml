@@ -38,4 +38,17 @@
         android:onClick="renameImageViewOnClick"
         app:srcCompat="@drawable/ic_history_rename_history_image_view" />
 
+    <TextView
+        android:gravity="center_horizontal|center_vertical"
+        android:id="@+id/history_select_all_histories_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginEnd="46dp"
+        android:text="@string/history_select_all"
+        android:onClick="selectAllHistories"
+        android:textColor="@color/white"
+        android:textSize="16sp" />
+
 </RelativeLayout>

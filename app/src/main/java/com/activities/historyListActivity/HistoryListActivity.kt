@@ -11,12 +11,14 @@ import android.support.v7.widget.Toolbar
 import android.view.View
 import android.widget.ImageView
 import android.widget.RelativeLayout
+import android.widget.TextView
 import com.example.starkre.sleepAlertHistory.R
 import com.annotations.FuckingStaticSingleton
 import com.activities.historyListActivity.components.viewPager.adapter.RepositoryPagerAdapter
 import com.activities.historyListActivity.components.viewPager.fragment.RepositoryFragment
 import com.activities.currentHistoryActivity.CurrentHistoryActivity
 import com.activities.historyListActivity.mode.HistoryListActivityMode
+import com.annotations.NeedImplementation
 import com.annotations.XMLProvided
 import com.historyManagement.history.historyData.History
 import com.historyManagement.provider.HistoryManagerProvider
@@ -54,9 +56,9 @@ class HistoryListActivity : AppCompatActivity() {
 
     private val optionBar = OptionBar()
 
-    private val editBar = EditBar()
+    internal val editBar = EditBar()
 
-    private val dialogWindow = DialogWindow()
+    private val dialogView = DialogView()
 
     private var descriptionTextView: View? = null
 
@@ -74,7 +76,7 @@ class HistoryListActivity : AppCompatActivity() {
         this.bottomNavigationBar.init()
         this.optionBar.init()
         this.editBar.init()
-        this.dialogWindow.init()
+        this.dialogView.init()
         this.descriptionTextView = this.findViewById(R.id.history_list_activity_text_description)
     }
 
@@ -175,11 +177,15 @@ class HistoryListActivity : AppCompatActivity() {
 
         private var historyRenameImageView: ImageView? = null
 
+        internal var selectAllHistoriesTextView: TextView? = null
+
         internal fun init() {
             this.historyEditRelativeLayout = findViewById(R.id.history_edit_bar)
             this.historyDeleteImageView = findViewById(R.id.history_delete_history_image_view)
             this.historySyncImageView = findViewById(R.id.history_sync_history_image_view)
             this.historyRenameImageView = findViewById(R.id.history_rename_history_image_view)
+            this.selectAllHistoriesTextView = findViewById(R.id
+                    .history_select_all_histories_text_view)
         }
 
         internal fun refresh() {
@@ -187,6 +193,7 @@ class HistoryListActivity : AppCompatActivity() {
             this.setSyncImageViewVisibility()
             this.setDeleteImageViewVisibility()
             this.setRenameImageViewVisibility()
+            this.setSelectAllHistoriesText()
         }
 
         private fun setEditViewVisibility() {
@@ -195,8 +202,16 @@ class HistoryListActivity : AppCompatActivity() {
         }
 
         private fun setSyncImageViewVisibility() {
-            val isVisible = !HistoryManagerProvider.THIS?.current?.hasNotSelectedHistories()!!
-            HistoryViewUtils.setVisibility(isVisible, this.historySyncImageView)
+            val historyManagerProvider = HistoryManagerProvider.THIS
+            val historyManager = historyManagerProvider?.current
+            val selectedHistorySet = historyManager?.selectedHistories
+            for (selectedHistory in selectedHistorySet!!) {
+                if (!historyManagerProvider.isSynchronizedHistory(selectedHistory)) {
+                    HistoryViewUtils.setVisibility(true, this.historySyncImageView)
+                    return
+                }
+            }
+            HistoryViewUtils.setVisibility(false, this.historySyncImageView)
         }
 
         private fun setDeleteImageViewVisibility() {
@@ -208,26 +223,27 @@ class HistoryListActivity : AppCompatActivity() {
             val isVisible = HistoryManagerProvider.THIS?.current?.hasOneSelectedHistory()!!
             HistoryViewUtils.setVisibility(isVisible, this.historyRenameImageView)
         }
+
+        fun setSelectAllHistoriesText(){
+            val historyManager = HistoryManagerProvider.THIS?.current
+            log.info("COUNT SELECTED: " + historyManager?.selectedHistories?.size)
+            log.info("COUNT SUMMARY: " + historyManager?.selectedHistories?.size)
+            if (historyManager!!.isSelectedAllHistories()) {
+                log.info("ALL SELECTED!!!")
+                this.selectAllHistoriesTextView?.setText(R.string.history_deselect_all)
+            }
+            if (historyManager.hasNotSelectedHistories()) {
+                log.info("ALL DESELECTED!!!")
+                this.selectAllHistoriesTextView?.setText(R.string.history_select_all)
+            }
+        }
     }
 
     @XMLProvided(layout = "history_edit_view.xml")
     fun deleteImageViewOnClick(unused: View) {
         val recyclerViewAdapter = RepositoryFragment.CURRENT?.recyclerViewAdapter
-//        final HistoryPopUpFrame popUpPanel = this.parent.getHistoryPopUpFrame();
-//        final RelativeLayout relativePopUpLayoutPanel = popUpPanel.getRelativePopUpLayoutPanel();
-//        return view -> {
-//            final boolean hasSynchronized = HistoryManagerProvider.THIS
-//                    .hasSynchronizedSelectedHistories();
-//            if (hasSynchronized) {
-//                adapter.setCurrentAction(ActionType.REMOVE);
-//                adapter.setCurrentFilter(FilterType.SYNCHRONIZED);
-//                popUpPanel.buildMessage(ActionType.REMOVE, FilterType.SYNCHRONIZED);
-//                relativePopUpLayoutPanel.setVisibility(View.VISIBLE);
-//            } else {
-//                adapter.removeSelectedHistories();
-//            }
-//            this.parent.refresh();
-//        }
+        recyclerViewAdapter?.removeSelectedHistories()
+        this.refresh()
     }
 
     @XMLProvided(layout = "history_edit_view.xml")
@@ -240,10 +256,29 @@ class HistoryListActivity : AppCompatActivity() {
 
     }
 
-    inner class DialogWindow {
+    @XMLProvided(layout = "history_edit_view.xml")
+    fun selectAllHistories(unused: View){
+        val adapter = RepositoryFragment.CURRENT?.recyclerViewAdapter
+        //Немного неадекватная проверка:
+        val historySelectAllString = this.getString(R.string.history_select_all)
+        val textView = this.editBar.selectAllHistoriesTextView
+        if (textView?.text == historySelectAllString) {
+            adapter?.selectAllHistories()
+            textView?.setText(R.string.history_deselect_all)
+        } else {
+            adapter?.deselectAllHistories()
+            textView?.setText(R.string.history_select_all)
+        }
+        this.refresh()
+    }
 
+    inner class DialogView {
+
+        var dialogRelativeLayout: RelativeLayout? = null
+
+        @NeedImplementation
         internal fun init() {
-
+//            this.dialogRelativeLayout = findViewById(...)
         }
     }
 
@@ -315,8 +350,7 @@ class HistoryListActivity : AppCompatActivity() {
             //Говорим адаптеру, что данные поменялись, и он перепривязывает холдеры:
             adapter?.notifyDataSetChanged()
             //Говорим адаптеру, чтобы он переключился в режим просмотра.
-            adapter?.switchFromSelectingToBrowsingMode()
-            HistoryListActivity.THIS?.refresh()
+            refresh()
         }
 
         override fun onPageScrollStateChanged(state: Int) {
@@ -334,11 +368,16 @@ class HistoryListActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
+        val currentAdapter = RepositoryFragment.CURRENT?.recyclerViewAdapter
+        val oppositeAdapter = RepositoryFragment.OPPOSITE?.recyclerViewAdapter
         when (this.activityMode) {
-            HistoryListActivityMode.SELECTING -> this.activityMode = HistoryListActivityMode
-                    .SHOW_OPTIONS
             HistoryListActivityMode.SHOW_OPTIONS -> this.activityMode = HistoryListActivityMode
                     .BROWSING
+            HistoryListActivityMode.SELECTING -> {
+                this.activityMode = HistoryListActivityMode.SHOW_OPTIONS
+                currentAdapter?.switchFromSelectingToBrowsingMode()
+                oppositeAdapter?.switchFromSelectingToBrowsingMode()
+            }
             else -> super.onBackPressed()
         }
         this.refresh()

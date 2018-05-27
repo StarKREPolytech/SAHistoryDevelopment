@@ -117,7 +117,7 @@ class HistoryManagerProvider {
 
     private fun selectHistory(history: History, historyManager: HistoryManager) {
         log.info("Before selected histories are ${historyManager.selectedHistories}")
-        historyManager.selectedHistories.plus(history)
+        historyManager.selectedHistories.add(history)
         log.info("After selected histories are ${historyManager.selectedHistories}")
         historyManager.refreshSelectedHistory()
     }
@@ -148,7 +148,7 @@ class HistoryManagerProvider {
     }
 
     private fun deselectHistory(history: History, historyManager: HistoryManager) {
-        historyManager.selectedHistories.minus(history)
+        historyManager.selectedHistories.remove(history)
         historyManager.refreshSelectedHistory()
     }
 
@@ -203,7 +203,7 @@ class HistoryManagerProvider {
      * @param history, которую нужно удалить.
      */
 
-    fun removeHistory(history: History) {
+    private fun removeHistory(history: History) {
         if (this.isSynchronizedHistory(history) && this.synchronizedMode) {
             this.removeHistory(history, this.opposite!!)
         }
@@ -212,7 +212,7 @@ class HistoryManagerProvider {
 
     private fun removeHistory(history: History, historyManager: HistoryManager) {
         historyManager.histories.remove(history)
-        historyManager.selectedHistories.minus(history)
+        historyManager.selectedHistories.remove(history)
         historyManager.refreshSelectedHistory()
     }
 

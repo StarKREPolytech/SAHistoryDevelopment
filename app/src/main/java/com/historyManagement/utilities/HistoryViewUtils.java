@@ -28,15 +28,15 @@ public final class HistoryViewUtils {
         view.setVisibility(visibility);
     }
 
-    public static void showAllEditButtonsAndHideAllTicks(
+    public static void showAllLabelsAndHideAllTicks(
             final List<HistoryViewHolder> historyViewHolderList){
         for (final HistoryViewHolder holder : historyViewHolderList) {
-            showEditButtonAndHideTick(holder);
+            showLabelAndHideTick(holder);
         }
     }
 
-    public static void showEditButtonAndHideTick(final HistoryViewHolder holder){
-        holder.getHistoryRepositoryImageView().setVisibility(View.VISIBLE);
+    public static void showLabelAndHideTick(final HistoryViewHolder holder){
+        holder.getLabelImageView().setVisibility(View.VISIBLE);
         holder.getImageViewTick().setVisibility(View.INVISIBLE);
         holder.getImageViewTickOff().setVisibility(View.INVISIBLE);
     }

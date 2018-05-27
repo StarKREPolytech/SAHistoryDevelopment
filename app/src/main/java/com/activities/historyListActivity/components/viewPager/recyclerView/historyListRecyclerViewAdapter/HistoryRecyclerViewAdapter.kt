@@ -68,9 +68,9 @@ class HistoryRecyclerViewAdapter : RecyclerView.Adapter<HistoryViewHolder>() {
      * и с какими историями должен работать адаптер.
      */
 
-    val historyViewHolderList: MutableList<HistoryViewHolder> = ArrayList()
+    private val historyViewHolderList: MutableList<HistoryViewHolder> = ArrayList()
 
-    val historyVsHolderMap: MutableMap<History, HistoryViewHolder> = HashMap()
+    private val historyVsHolderMap: MutableMap<History, HistoryViewHolder> = HashMap()
 
     private val actionConfigurator = HistoryActionConfigurator()
 
@@ -129,9 +129,9 @@ class HistoryRecyclerViewAdapter : RecyclerView.Adapter<HistoryViewHolder>() {
         }
         repositoryButton?.setImageResource(labelID)
         when (HistoryListActivity.THIS?.activityMode) {
-            HistoryListActivityMode.BROWSING -> HistoryViewUtils.showEditButtonAndHideTick(holder)
+            HistoryListActivityMode.BROWSING -> HistoryViewUtils.showLabelAndHideTick(holder)
             HistoryListActivityMode.SELECTING -> HistoryViewUtils.hideHistoryLabelAndShowCell(holder)
-            HistoryListActivityMode.RENAMING -> HistoryViewUtils.showEditButtonAndHideTick(holder)
+            HistoryListActivityMode.RENAMING -> HistoryViewUtils.showLabelAndHideTick(holder)
             else -> {
             }
         }
@@ -210,20 +210,18 @@ class HistoryRecyclerViewAdapter : RecyclerView.Adapter<HistoryViewHolder>() {
         val holder = this.historyVsHolderMap[history]
         holder?.textViewHeadline?.visibility = View.INVISIBLE
         holder?.historyHeadlineTextEditor?.visibility = View.VISIBLE
-        HistoryViewUtils.showAllEditButtonsAndHideAllTicks(this.historyViewHolderList)
+        HistoryViewUtils.showAllLabelsAndHideAllTicks(this.historyViewHolderList)
     }
 
     /**
      * selectAllHistories() добавляет все выбранные истории.
      */
-//
-//    public final void selectAllHistories() {
-//        final HistoryBottomBar historyBottomBar
-//                = RepositoryFragment.THIS.getHistoryBottomBar();
-//        HistoryViewUtils.hideAllEditButtonsAndSelectAllTicks(this.historyViewHolderList);
-//        HistoryManagerProvider.THIS.selectAllHistories();
-//        historyBottomBar.setRenameHistoryButtonVisibility();
-//    }
+
+    fun selectAllHistories() {
+        HistoryViewUtils.hideAllEditButtonsAndSelectAllTicks(this.historyViewHolderList)
+        HistoryManagerProvider.THIS?.selectAllHistories()
+        HistoryListActivity.THIS?.editBar?.setSelectAllHistoriesText()
+    }
 
     /**
      * deselectAllHistories() удаляет все выбранные истории.
@@ -257,13 +255,12 @@ class HistoryRecyclerViewAdapter : RecyclerView.Adapter<HistoryViewHolder>() {
                 if (imageViewTick.visibility == View.INVISIBLE) {
                     HistoryManagerProvider.THIS!!.selectHistory(currentPosition)
                     imageViewTick.visibility = View.VISIBLE
-                    HistoryManagerProvider.THIS!!.current!!.logSelectedHistories()
                 } else {
                     //Снимаем галочку...
                     HistoryManagerProvider.THIS!!.deselectHistory(currentPosition)
                     imageViewTick.visibility = View.INVISIBLE
-                    log.info("HIDE TICK")
                 }
+                HistoryManagerProvider.THIS!!.current!!.logSelectedHistories()
             }
             HistoryListActivityMode.RENAMING -> {
                 //Устанавливаем заголовок, который был до переименовывания:
@@ -318,7 +315,7 @@ class HistoryRecyclerViewAdapter : RecyclerView.Adapter<HistoryViewHolder>() {
     fun switchFromSelectingToBrowsingMode() {
         HistoryListActivity.THIS?.activityMode = HistoryListActivityMode.BROWSING
         HistoryManagerProvider.THIS!!.deselectAllHistories()
-        HistoryViewUtils.showAllEditButtonsAndHideAllTicks(this.historyViewHolderList)
+        HistoryViewUtils.showAllLabelsAndHideAllTicks(this.historyViewHolderList)
     }
 
     /**
