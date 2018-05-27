@@ -13,7 +13,7 @@
         android:layout_alignParentTop="true"
         android:layout_marginStart="25dp"
         android:layout_marginTop="10dp"
-        android:onClick="historySelectionModeOnClick"
+        android:onClick="selectionModeImageViewOnClick"
         app:srcCompat="@drawable/ic_history_selecting_mode_image_view"
         />
 
@@ -25,7 +25,8 @@
         android:layout_alignParentTop="true"
         android:layout_marginStart="100dp"
         android:layout_marginTop="10dp"
-        app:srcCompat="@drawable/ic_history_sort_histories_image_view" />
+        android:onClick="sortImageViewOnClick"
+        app:srcCompat="@drawable/ic_history_sort_histories_by_alphabet_image_view" />
 
     <ImageView
         android:id="@+id/history_sync_all_histories_image_view"
@@ -33,6 +34,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="175dp"
         android:layout_marginTop="10dp"
+        android:onClick="syncAllImageViewOnClick"
         app:srcCompat="@drawable/ic_history_sync_all_histories_image_view"/>
 
 </RelativeLayout>

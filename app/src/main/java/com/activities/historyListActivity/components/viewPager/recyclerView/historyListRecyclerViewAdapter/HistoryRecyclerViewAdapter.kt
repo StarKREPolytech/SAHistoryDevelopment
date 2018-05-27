@@ -105,7 +105,7 @@ class HistoryRecyclerViewAdapter : RecyclerView.Adapter<HistoryViewHolder>() {
      */
 
     override fun onBindViewHolder(holder: HistoryViewHolder, position: Int) {
-        val currentHistoryManager = HistoryManagerProvider.THIS!!.get()
+        val currentHistoryManager = HistoryManagerProvider.THIS!!.current
         val history = currentHistoryManager!!.getHistory(position)
         //Установили параметры из истории:
         holder.textViewHeadline?.text = history.headline
@@ -146,7 +146,7 @@ class HistoryRecyclerViewAdapter : RecyclerView.Adapter<HistoryViewHolder>() {
      */
 
     private fun setHistoryTickVisibility(history: History, holder: HistoryViewHolder) {
-        val historyManager = HistoryManagerProvider.THIS!!.get()
+        val historyManager = HistoryManagerProvider.THIS!!.current
         val imageViewTick = holder.imageViewTick
         val isSelectedHistory = historyManager!!.isSelectedHistory(history)
         val visibility = if (isSelectedHistory) View.VISIBLE else View.INVISIBLE
@@ -165,7 +165,7 @@ class HistoryRecyclerViewAdapter : RecyclerView.Adapter<HistoryViewHolder>() {
         val editText = holder.historyHeadlineTextEditor
         val headlineText = holder.textViewHeadline
         if (HistoryListActivity.THIS?.activityMode == HistoryListActivityMode.RENAMING) {
-            val historyManager = HistoryManagerProvider.THIS!!.get()
+            val historyManager = HistoryManagerProvider.THIS!!.current
             val hasOneSelectedHistory = historyManager!!.hasOneSelectedHistory()
             val isSelectedHistory = historyManager.isSelectedHistory(history)
             val isThisHistory = hasOneSelectedHistory && isSelectedHistory
@@ -182,16 +182,15 @@ class HistoryRecyclerViewAdapter : RecyclerView.Adapter<HistoryViewHolder>() {
      * @return число элементов в списке.
      */
 
-    override fun getItemCount(): Int {
-        return HistoryManagerProvider.THIS!!.get()!!.getNumberOfHistories()
-    }
+    override fun getItemCount(): Int = HistoryManagerProvider.THIS!!.current!!
+            .getNumberOfHistories()
 
     /**
      * removeSelectedHistories() удаляет историю из списка.
      */
 
     fun removeSelectedHistories() {
-        val historyManager = HistoryManagerProvider.THIS!!.get()
+        val historyManager = HistoryManagerProvider.THIS!!.current
         val selectedSize = historyManager!!.selectedHistories.size
         //Истории которые мы не видим через RecyclerView просто удаляем:
         HistoryManagerProvider.THIS!!.removeSelectedHistories()
@@ -207,7 +206,7 @@ class HistoryRecyclerViewAdapter : RecyclerView.Adapter<HistoryViewHolder>() {
 
     fun renameSelectedHistory() {
         HistoryListActivity.THIS?.activityMode = HistoryListActivityMode.RENAMING
-        val history = HistoryManagerProvider.THIS!!.get()!!.selectedHistory
+        val history = HistoryManagerProvider.THIS!!.current!!.selectedHistory
         val holder = this.historyVsHolderMap[history]
         holder?.textViewHeadline?.visibility = View.INVISIBLE
         holder?.historyHeadlineTextEditor?.visibility = View.VISIBLE
@@ -246,7 +245,7 @@ class HistoryRecyclerViewAdapter : RecyclerView.Adapter<HistoryViewHolder>() {
      */
 
     fun handleOnHistoryClick(imageViewTick: ImageView, currentPosition: Int) {
-        val historyManager = HistoryManagerProvider.THIS!!.get()
+        val historyManager = HistoryManagerProvider.THIS!!.current
         when (HistoryListActivity.THIS?.activityMode) {
             HistoryListActivityMode.BROWSING ->
                 //Идем в историю --->
@@ -267,6 +266,8 @@ class HistoryRecyclerViewAdapter : RecyclerView.Adapter<HistoryViewHolder>() {
                 //Устанавливаем заголовок, который был до переименовывания:
                 val history = historyManager!!.selectedHistory
                 this.setNewHeadlineInHistory(history!!.headline)
+            }
+            else -> {
             }
         }
     }
@@ -329,7 +330,7 @@ class HistoryRecyclerViewAdapter : RecyclerView.Adapter<HistoryViewHolder>() {
      */
 
     private fun resetHistoryHeadline() {
-        val history = HistoryManagerProvider.THIS!!.get()!!.selectedHistory
+        val history = HistoryManagerProvider.THIS!!.current!!.selectedHistory
         val holder = this.historyVsHolderMap[history]
         holder?.historyHeadlineTextEditor?.setHint(R.string.put_new_history_name)
         holder?.historyHeadlineTextEditor?.setText(R.string.put_new_history_name)
@@ -348,7 +349,7 @@ class HistoryRecyclerViewAdapter : RecyclerView.Adapter<HistoryViewHolder>() {
             //Вытягиваем новый текст:
             val newText = historyHeadlineTextEditor.text.toString()
             //Тянем выбранную историю:
-            val selectedHistory = HistoryManagerProvider.THIS!!.get()!!.selectedHistory
+            val selectedHistory = HistoryManagerProvider.THIS!!.current!!.selectedHistory
             //Перед тем как перезаписывать, нужно проверить валидность текста:
             val isValidVsMsg = checkHistoryName(selectedHistory, newText)
             val isValidNewName = isValidVsMsg.first
@@ -374,7 +375,7 @@ class HistoryRecyclerViewAdapter : RecyclerView.Adapter<HistoryViewHolder>() {
      */
 
     private fun checkHistoryName(renamedHistory: History?, newHeadline: String): Pair<Boolean, String> {
-        val histories = HistoryManagerProvider.THIS!!.get()!!.histories
+        val histories = HistoryManagerProvider.THIS!!.current!!.histories
         //Пустой текст нельзя:
         val isEmpty = newHeadline == ""
         if (isEmpty) {
@@ -400,7 +401,7 @@ class HistoryRecyclerViewAdapter : RecyclerView.Adapter<HistoryViewHolder>() {
      */
 
     private fun setNewHeadlineInHistory(newText: String?) {
-        val historyManager = HistoryManagerProvider.THIS!!.get()
+        val historyManager = HistoryManagerProvider.THIS!!.current
         val selectedHistory = historyManager!!.selectedHistory
         //Достали холдер, который привязан к соотвествующей истории:
         val holder = this.historyVsHolderMap[selectedHistory]
@@ -468,7 +469,7 @@ class HistoryRecyclerViewAdapter : RecyclerView.Adapter<HistoryViewHolder>() {
         if (isSynchronized) {
             this.notifyDataSetChanged()
             //Показываем сообщение на экране:
-            val from = HistoryManagerProvider.THIS!!.get()!!.getRepositoryHeadlinePostfix()
+            val from = HistoryManagerProvider.THIS!!.current!!.getRepositoryHeadlinePostfix()
             val to = HistoryManagerProvider.THIS!!.opposite!!
                     .getRepositoryHeadlinePostfix()
             this.showSyncToast(HistoryViewUtils.convertToPluralWord(from), HistoryViewUtils.convertToPluralWord(to))

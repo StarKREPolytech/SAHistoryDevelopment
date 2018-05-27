@@ -16,7 +16,7 @@ import java.util.*
  * Класс HistoryManagerProvider является провайдером
  * экземпляров класса [HistoryManager] для
  * [HistoryRecyclerViewAdapter] адаптера через
- * поле currentHistoryManager.
+ * поле current.
  */
 
 @Slf4j
@@ -28,7 +28,7 @@ class HistoryManagerProvider {
         var THIS: HistoryManagerProvider? = HistoryManagerProvider()
     }
 
-    private var currentHistoryManager: HistoryManager? = null
+    var current: HistoryManager? = null
 
     /**
      * getOpposite()
@@ -62,7 +62,7 @@ class HistoryManagerProvider {
     var inScopeHistory: History? = null
 
     fun isAllSynchronized(): Boolean {
-        val histories = this.currentHistoryManager!!.histories
+        val histories = this.current!!.histories
         for (history in histories) {
             if (!this.isSynchronizedHistory(history)) {
                 return false
@@ -77,7 +77,7 @@ class HistoryManagerProvider {
         this.cloudHistoryManager = CloudHistoryManager()
         //Устанавливаем текущий и альтернативный history manager.
         //Текущий изначально локальный менеджер:
-        this.currentHistoryManager = this.localHistoryManager
+        this.current = this.localHistoryManager
         this.opposite = this.cloudHistoryManager
     }
 
@@ -87,23 +87,13 @@ class HistoryManagerProvider {
      */
 
     fun swapLocalAndCloud() {
-        if (this.currentHistoryManager === this.localHistoryManager) {
-            this.currentHistoryManager = this.cloudHistoryManager
+        if (this.current === this.localHistoryManager) {
+            this.current = this.cloudHistoryManager
             this.opposite = this.localHistoryManager
         } else {
-            this.currentHistoryManager = this.localHistoryManager
+            this.current = this.localHistoryManager
             this.opposite = this.cloudHistoryManager
         }
-    }
-
-    /**
-     * get()
-     *
-     * @return текущий history manager.
-     */
-
-    fun get(): HistoryManager? {
-        return this.currentHistoryManager
     }
 
     /**
@@ -114,8 +104,8 @@ class HistoryManagerProvider {
      */
 
     fun selectHistory(position: Int) {
-        val history = this.currentHistoryManager!!.histories[position]
-        this.selectHistory(history, this.currentHistoryManager!!)
+        val history = this.current!!.histories[position]
+        this.selectHistory(history, this.current!!)
         if (this.isSynchronizedHistory(history)) {
             this.selectHistory(history, this.opposite!!)
         }
@@ -131,7 +121,7 @@ class HistoryManagerProvider {
      */
 
     fun selectAllHistories() {
-        for (i in 0 until this.currentHistoryManager!!.histories.size) {
+        for (i in 0 until this.current!!.histories.size) {
             this.selectHistory(i)
         }
     }
@@ -144,8 +134,8 @@ class HistoryManagerProvider {
      */
 
     fun deselectHistory(position: Int) {
-        val history = this.currentHistoryManager!!.histories[position]
-        this.deselectHistory(history, this.currentHistoryManager!!)
+        val history = this.current!!.histories[position]
+        this.deselectHistory(history, this.current!!)
         if (this.isSynchronizedHistory(history)) {
             this.deselectHistory(history, this.opposite!!)
         }
@@ -161,7 +151,7 @@ class HistoryManagerProvider {
      */
 
     fun deselectAllHistories() {
-        for (i in 0 until this.currentHistoryManager!!.histories.size) {
+        for (i in 0 until this.current!!.histories.size) {
             this.deselectHistory(i)
         }
     }
@@ -172,16 +162,16 @@ class HistoryManagerProvider {
      */
 
     fun addHistories(histories: Collection<History>) {
-        this.currentHistoryManager!!.histories.addAll(histories)
+        this.current!!.histories.addAll(histories)
     }
 
     fun addHistories(vararg histories: History) {
         val historyCollection = Arrays.asList(*histories)
-        this.currentHistoryManager!!.histories.addAll(historyCollection)
+        this.current!!.histories.addAll(historyCollection)
     }
 
     fun addHistory(history: History) {
-        this.currentHistoryManager!!.histories.add(history)
+        this.current!!.histories.add(history)
     }
 
     private fun addHistory(history: History, historyManager: HistoryManager) {
@@ -193,7 +183,7 @@ class HistoryManagerProvider {
      */
 
     fun removeSelectedHistories() {
-        val historySet = this.currentHistoryManager!!.selectedHistories
+        val historySet = this.current!!.selectedHistories
         val list = ArrayList(historySet)
         for (i in list.indices) {
             val history = list[i]
@@ -211,7 +201,7 @@ class HistoryManagerProvider {
         if (this.isSynchronizedHistory(history) && this.synchronizedMode) {
             this.removeHistory(history, this.opposite!!)
         }
-        this.removeHistory(history, this.currentHistoryManager!!)
+        this.removeHistory(history, this.current!!)
     }
 
     private fun removeHistory(history: History, historyManager: HistoryManager) {
@@ -229,26 +219,27 @@ class HistoryManagerProvider {
      */
 
     fun synchronize(currentPosition: Int): Boolean {
-        val history = this.currentHistoryManager!!.histories[currentPosition]
+        val history = this.current!!.histories[currentPosition]
         return this.synchronize(history)
     }
 
     private fun synchronize(history: History): Boolean {
-        if (!this.opposite!!.hasHistory(history)) {
+        return if (!this.opposite!!.hasHistory(history)) {
             val oppositeHistoryList = this.opposite!!.histories
             val headline = history.headline
-            val newHeadline = this.checkUniqueHeadlineAndRenameIfNecessary(headline!!, oppositeHistoryList)
+            val newHeadline = this.checkUniqueHeadlineAndRenameIfNecessary(headline!!
+                    , oppositeHistoryList)
             history.headline = newHeadline
             this.addHistory(history, this.opposite!!)
             this.opposite!!.uploadData(history)
-            return true
+            true
         } else {
-            return false
+            false
         }
     }
 
     fun synchronizeAll(): Boolean {
-        val currentHistories = this.currentHistoryManager!!.histories
+        val currentHistories = this.current!!.histories
         var hasSynchronized = false
         for (history in currentHistories) {
             if (this.synchronize(history) && !hasSynchronized) {
@@ -284,30 +275,32 @@ class HistoryManagerProvider {
      * @return новый заголовок синхронизируемой истории.
     </History> */
 
-    private fun checkUniqueHeadlineAndRenameIfNecessary(headline: String, otherHistoryList: List<History>): String {
+    private fun checkUniqueHeadlineAndRenameIfNecessary(headline: String
+                                                        , otherHistoryList: List<History>): String {
         val headlineBuilder = StringBuilder(headline)
         for (i in otherHistoryList.indices) {
             val otherHeadline = otherHistoryList[i].headline
             if (headlineBuilder.toString() == otherHeadline) {
-                headlineBuilder.append(this.currentHistoryManager!!.getRepositoryHeadlinePostfix())
-                return checkUniqueHeadlineAndRenameIfNecessary(headlineBuilder.toString(), otherHistoryList)
+                headlineBuilder.append(this.current!!.getRepositoryHeadlinePostfix())
+                return checkUniqueHeadlineAndRenameIfNecessary(headlineBuilder.toString()
+                        , otherHistoryList)
             }
         }
         return headlineBuilder.toString()
     }
 
     fun setHeadlineForSelectedHistory(newText: String) {
-        if (this.isSynchronizedHistory(this.currentHistoryManager!!.selectedHistory!!)) {
+        if (this.isSynchronizedHistory(this.current!!.selectedHistory!!)) {
             this.opposite!!.selectedHistory?.headline = newText
         }
-        this.currentHistoryManager!!.selectedHistory?.headline = newText
+        this.current!!.selectedHistory?.headline = newText
     }
 
-    fun isSynchronizedHistory(history: History): Boolean = this.cloudHistoryManager.histories.contains(history)
-            && this.localHistoryManager.histories.contains(history)
+    fun isSynchronizedHistory(history: History): Boolean = this.cloudHistoryManager.histories
+            .contains(history) && this.localHistoryManager.histories.contains(history)
 
     fun hasSynchronizedSelectedHistories(): Boolean {
-        val histories = this.currentHistoryManager!!.selectedHistories
+        val histories = this.current!!.selectedHistories
         for (history in histories) {
             if (this.isSynchronizedHistory(history)) {
                 return true
@@ -316,11 +309,7 @@ class HistoryManagerProvider {
         return false
     }
 
-    fun sortByAlphabet() {
-        this.currentHistoryManager!!.histories.sortBy { it -> it.headline }
-    }
+    fun sortByAlphabet() = this.current!!.histories.sortBy { it.headline }
 
-    fun sortByDate() {
-        this.currentHistoryManager!!.histories.sortedBy { it -> it.description }
-    }
+    fun sortByDate() = this.current!!.histories.sortBy { it.description }
 }

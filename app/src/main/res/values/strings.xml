@@ -17,6 +17,6 @@
     <string name="history">History</string>
     <string name="charts">Charts</string>
 
-    <string name="tab_title_main_1">Локальное хранилище</string>
-    <string name="tab_title_main_2">Облачное хранилище</string>
+    <string name="local_repository_tab_title">Локальное хранилище</string>
+    <string name="cloud_repository_tab_title">Облачное хранилище</string>
 </resources>

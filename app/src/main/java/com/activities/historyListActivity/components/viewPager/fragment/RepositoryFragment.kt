@@ -26,22 +26,27 @@ class RepositoryFragment : Fragment() {
         @JvmStatic
         var log = Logger.getLogger(RepositoryFragment::class.java.name)
 
+        @SuppressLint("StaticFieldLeak")
         var LOCAL: RepositoryFragment? = null
 
+        @SuppressLint("StaticFieldLeak")
         var CLOUD: RepositoryFragment? = null
 
+        @SuppressLint("StaticFieldLeak")
         var CURRENT : RepositoryFragment? = null
 
+        @SuppressLint("StaticFieldLeak")
         var OPPOSITE : RepositoryFragment? = null
 
-        fun PUT_LOCAL_AND_CLOUD_FRAGMENTS(localFragment: RepositoryFragment, cloudFragment: RepositoryFragment) {
+        fun putLocalAndCloudFragments(localFragment: RepositoryFragment
+                                      , cloudFragment: RepositoryFragment) {
             LOCAL = localFragment
             CLOUD = cloudFragment
             CURRENT = localFragment
             OPPOSITE = cloudFragment
         }
 
-        fun SWAP_LOCAL_AND_CLOUD() {
+        fun swapLocalAndCloud() {
             if (CURRENT === LOCAL){
                 CURRENT = CLOUD
                 OPPOSITE = LOCAL
@@ -58,8 +63,6 @@ class RepositoryFragment : Fragment() {
 
     var recyclerViewAdapter: HistoryRecyclerViewAdapter? = null
 
-    private var descriptionTextView: View? = null
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?
                               , savedInstanceState: Bundle?): View? {
         this.rootView = inflater.inflate(R.layout.repository_fragment, container, false)
@@ -68,7 +71,6 @@ class RepositoryFragment : Fragment() {
     }
 
     private fun init(view: View?) {
-        this.descriptionTextView = view?.findViewById(R.id.history_list_activity_text_description)
         this.initRecyclerView(view)
     }
 
@@ -85,18 +87,6 @@ class RepositoryFragment : Fragment() {
     }
 
     fun refresh(){
-        this.setDescriptionAboutHistoryVisibility()
-    }
 
-    /**
-     * setDescriptionAboutHistoryVisibility() устанавливает текстовую
-     * информацию об окне истории в центре, если нет историй.
-     */
-
-    private fun setDescriptionAboutHistoryVisibility() {
-        val historyManager = HistoryManagerProvider.THIS?.get()
-        //Если список пустой, то вывести информацию:
-        val isEmpty = historyManager?.hasHistories()
-        HistoryViewUtils.setVisibility(isEmpty!!, this.descriptionTextView)
     }
 }
