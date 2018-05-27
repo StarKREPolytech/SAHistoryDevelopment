@@ -6,8 +6,6 @@ import com.activities.historyListActivity.components.viewPager.recyclerView.hist
 
 import java.util.List;
 
-import lombok.experimental.UtilityClass;
-
 /**
  * @author Игорь Гулькин 30.04.2018.
  *
@@ -15,7 +13,6 @@ import lombok.experimental.UtilityClass;
  * которая позволяет избегать дублирование кода.
  */
 
-@UtilityClass
 public final class HistoryViewUtils {
 
     /**

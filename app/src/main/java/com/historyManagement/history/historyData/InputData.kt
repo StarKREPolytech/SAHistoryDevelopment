@@ -1,8 +1,5 @@
 package com.historyManagement.history.historyData
 
-import lombok.ToString
-
-@ToString(includeFieldNames = false, of = arrayOf("level"))
 class InputData (val level: Double, val passedDistance: Double, val isAlarm: Boolean) {
 
     val milliTime: Long = System.currentTimeMillis()
@@ -23,4 +20,6 @@ class InputData (val level: Double, val passedDistance: Double, val isAlarm: Boo
 
     private class IllegalTirednessLevelException
         : RuntimeException("Полученный уровень усталости должен быть в пределах от 0 до 100%")
+
+    override fun toString(): String = "${this.level}"
 }

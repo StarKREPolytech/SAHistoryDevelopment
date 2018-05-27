@@ -22,15 +22,18 @@ import java.util.logging.Logger
 abstract class HistoryManager {
 
     private companion object {
-        @JvmStatic val log = Logger.getLogger(HistoryManager::class.java.name)
+
+        @JvmStatic
+        val log = Logger.getLogger(HistoryManager::class.java.name)
+
+        /**
+         * Иммитируем данные истории через рандом.
+         */
+
+        @Temporary
+        @JvmField
+        val ЗАХОТЕЛ_ТАКОЙ_РАНДОМ = Random()
     }
-
-    /**
-     * Иммитируем данные истории через рандом.
-     */
-
-    @Temporary
-    private val ЗАХОТЕЛ_ТАКОЙ_РАНДОМ = Random()
 
     /**
      * 1.) histories - это ArrayList, который хранит в себе экземпляры историй;
@@ -56,7 +59,7 @@ abstract class HistoryManager {
 
     @Temporary
     private fun generateHistories() {
-        val times = 17 + ЗАХОТЕЛ_ТАКОЙ_РАНДОМ_НА_ИСТОРИИ()
+        val times = ЗАХОТЕЛ_ТАКОЙ_РАНДОМ_НА_ИСТОРИИ()
         for (i in 0 until times) {
             val history = History()
             history.headline = "History: " + (times - i)
@@ -118,7 +121,8 @@ abstract class HistoryManager {
      * выделенных элементах и о их количестве.
      */
 
-    private fun logSelectedHistories() {
+    @Temporary
+    fun logSelectedHistories() {
         log.info("Количество выделенных элементов: " + this.selectedHistories.size)
         for (history in this.selectedHistories) {
             log.info("\n" + history)
@@ -156,8 +160,6 @@ abstract class HistoryManager {
 
     fun getSynchronizedLabel(): Int = R.drawable.history_sync_repository_label_image_view
 
-    fun getSynchronizedColor(): Int = R.color.light_blue
-
     /**
      * Абстрактные методы:
      */
@@ -188,7 +190,7 @@ abstract class HistoryManager {
      */
 
     @Temporary
-    private fun ЗАХОТЕЛ_ТАКОЙ_РАНДОМ_НА_ИСТОРИИ(): Int = ЗАХОТЕЛ_ТАКОЙ_РАНДОМ.nextInt(20)
+    private fun ЗАХОТЕЛ_ТАКОЙ_РАНДОМ_НА_ИСТОРИИ(): Int = ЗАХОТЕЛ_ТАКОЙ_РАНДОМ.nextInt(20) + 17
 
     @Temporary
     private fun ЗАХОТЕЛ_ТАКОЙ_РАНДОМ_НА_ПОЕЗДКУ_К_БАБУШКЕ(): Int = ЗАХОТЕЛ_ТАКОЙ_РАНДОМ.nextInt(1000)

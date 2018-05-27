@@ -253,14 +253,11 @@ class HistoryRecyclerViewAdapter : RecyclerView.Adapter<HistoryViewHolder>() {
                         .getHistory(currentPosition))
             }
             HistoryListActivityMode.SELECTING -> {
-                //Если история не выбрана, то выбираем и ставим галочку.
-                log.info("CURRENT POSITION: $currentPosition")
-                log.info("Visibility: ${imageViewTick.visibility}")
+                //Если история не выбрана, то выбираем и ставим галочку:
                 if (imageViewTick.visibility == View.INVISIBLE) {
                     HistoryManagerProvider.THIS!!.selectHistory(currentPosition)
                     imageViewTick.visibility = View.VISIBLE
-                    log.info("New visibility: ${imageViewTick.visibility}")
-                    log.info("SHOW TICK")
+                    HistoryManagerProvider.THIS!!.current!!.logSelectedHistories()
                 } else {
                     //Снимаем галочку...
                     HistoryManagerProvider.THIS!!.deselectHistory(currentPosition)

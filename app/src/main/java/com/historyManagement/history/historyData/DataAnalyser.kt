@@ -1,8 +1,8 @@
 package com.historyManagement.history.historyData
 
+import com.annotations.NotFinal
 import com.annotations.Temporary
 import com.historyManagement.history.historyData.convinientTime.ConvenientTime
-import lombok.experimental.NonFinal
 import java.util.*
 import java.util.function.Function
 import java.util.logging.Logger
@@ -10,7 +10,9 @@ import java.util.logging.Logger
 class DataAnalyser {
 
     companion object {
-        @JvmField val  log = Logger.getLogger(DataAnalyser::class.java.name)
+
+        @JvmField
+        val log: Logger = Logger.getLogger(DataAnalyser::class.java.name)
     }
 
     val inputDataList: MutableList<InputData> = ArrayList()
@@ -43,7 +45,7 @@ class DataAnalyser {
      * которые Вы можете
      */
 
-    val warningAnalyser: WarningAnalyser = WarningAnalyser()
+    private val warningAnalyser: WarningAnalyser = WarningAnalyser()
 
     var timeInterval: String? = null
 
@@ -90,6 +92,7 @@ class DataAnalyser {
      * @param warningCallBack - callBack.
      */
 
+    //Not private:
     fun pushInputData(level: Double, distance: Double, isAlarm: Boolean, warningCallBack: WarningCallBack) {
         val inputData = InputData(level, distance, isAlarm)
         this.maxPassedDistance = inputData.passedDistance
@@ -120,7 +123,8 @@ class DataAnalyser {
      * @param to   - до какого километра нужно анализировать данные.
      */
 
-    fun configureIntervalByDistance(from: String, to: String) {
+    //Not private:
+     fun configureIntervalByDistance(from: String, to: String) {
         val startPoint = java.lang.Double.parseDouble(from)
         val endPoint = java.lang.Double.parseDouble(to)
         if (endPoint - startPoint >= 0) {
@@ -143,8 +147,8 @@ class DataAnalyser {
      * этот метод.
      */
 
-    @NonFinal
-    fun configureIntervalByTime(from: Date, to: Date) {
+    @NotFinal
+    open fun configureIntervalByTime(from: Date, to: Date) {
         log.info("Stub")
     }
 

@@ -1,8 +1,5 @@
 package com.historyManagement.history.historyData
 
-import lombok.ToString
-
-
 /**
  * @author Игорь Гулькин 24.04.2018
  *         <p>
@@ -10,7 +7,6 @@ import lombok.ToString
  *         подробную информацию о поездке.
  */
 
-@ToString(includeFieldNames = false, of = arrayOf("headline"))
 class History {
 
     /**
@@ -57,4 +53,6 @@ class History {
         val fullDistance = this.dataAnalyser.distanceInterval
         return "$fullTime, $fullDistance"
     }
+
+    override fun toString(): String = this.headline!!
 }

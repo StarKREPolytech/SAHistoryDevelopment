@@ -1,13 +1,14 @@
 package com.historyManagement.history.historyData;
 
-import lombok.experimental.NonFinal;
-import lombok.extern.slf4j.Slf4j;
+import com.annotations.NotFinal;
+
+import java.util.logging.Logger;
 
 /**
  * @author Игорь Гулькин 11.05.2018.
- *         <p>
- *         Удобный интерфейс, если Вы хотите
- *         обрабатывать события WarningAnalyser
+ * <p>
+ * Удобный интерфейс, если Вы хотите
+ * обрабатывать события WarningAnalyser
  */
 
 public interface WarningCallBack {
@@ -25,23 +26,24 @@ public interface WarningCallBack {
      * унаследоваться от класса EmptyWarningCallBack и передавить выбранный метод.
      */
 
-    @Slf4j
-    @NonFinal
+    @NotFinal
     class EmptyWarningCallBack implements WarningCallBack {
 
-        @NonFinal
+        private static final Logger log = Logger.getLogger(EmptyWarningCallBack.class.getName());
+
+        @NotFinal
         @Override
         public void onHighLevel(final InputData inputData) {
             log.info("Stub");
         }
 
-        @NonFinal
+        @NotFinal
         @Override
         public void onCriticalLevel(final InputData inputData) {
             log.info("Stub");
         }
 
-        @NonFinal
+        @NotFinal
         @Override
         public void onAlarm(final InputData inputData) {
             log.info("Stub");

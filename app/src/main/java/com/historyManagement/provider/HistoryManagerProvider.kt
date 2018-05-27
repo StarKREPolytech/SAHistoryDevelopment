@@ -6,8 +6,8 @@ import com.historyManagement.history.historyData.History
 import com.historyManagement.historyManagement.HistoryManager
 import com.historyManagement.historyManagement.implementations.CloudHistoryManager
 import com.historyManagement.historyManagement.implementations.LocalHistoryManager
-import lombok.extern.slf4j.Slf4j
 import java.util.*
+import java.util.logging.Logger
 
 /**
  * @author Игорь Гулькин 30.04.2018.
@@ -19,13 +19,15 @@ import java.util.*
  * поле current.
  */
 
-@Slf4j
 @FuckingStaticSingleton
 class HistoryManagerProvider {
 
     companion object {
         @JvmField
         var THIS: HistoryManagerProvider? = HistoryManagerProvider()
+
+        @JvmStatic
+        var log = Logger.getLogger(HistoryManagerProvider::javaClass.name)
     }
 
     var current: HistoryManager? = null
@@ -104,7 +106,9 @@ class HistoryManagerProvider {
      */
 
     fun selectHistory(position: Int) {
+        log.info("Select history on position $position")
         val history = this.current!!.histories[position]
+        log.info("Take $history")
         this.selectHistory(history, this.current!!)
         if (this.isSynchronizedHistory(history)) {
             this.selectHistory(history, this.opposite!!)
@@ -112,7 +116,9 @@ class HistoryManagerProvider {
     }
 
     private fun selectHistory(history: History, historyManager: HistoryManager) {
+        log.info("Before selected histories are ${historyManager.selectedHistories}")
         historyManager.selectedHistories.plus(history)
+        log.info("After selected histories are ${historyManager.selectedHistories}")
         historyManager.refreshSelectedHistory()
     }
 
