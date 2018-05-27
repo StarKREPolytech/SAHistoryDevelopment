@@ -195,7 +195,7 @@ class HistoryRecyclerViewAdapter : RecyclerView.Adapter<HistoryViewHolder>() {
         //Истории которые мы не видим через RecyclerView просто удаляем:
         HistoryManagerProvider.THIS!!.removeSelectedHistories()
         this.notifyDataSetChanged()
-        HistoryListActivity.THIS?.refreshScreen()
+        HistoryListActivity.THIS?.refresh()
         Toasty.info(HistoryListActivity.THIS!!, "Удалено: $selectedSize").show()
     }
 
@@ -247,19 +247,25 @@ class HistoryRecyclerViewAdapter : RecyclerView.Adapter<HistoryViewHolder>() {
     fun handleOnHistoryClick(imageViewTick: ImageView, currentPosition: Int) {
         val historyManager = HistoryManagerProvider.THIS!!.current
         when (HistoryListActivity.THIS?.activityMode) {
-            HistoryListActivityMode.BROWSING ->
+            HistoryListActivityMode.BROWSING -> {
                 //Идем в историю --->
-                HistoryListActivity.THIS!!.goToCurrentHistory(historyManager!!.getHistory(currentPosition))
+                HistoryListActivity.THIS!!.goToCurrentHistory(historyManager!!
+                        .getHistory(currentPosition))
+            }
             HistoryListActivityMode.SELECTING -> {
                 //Если история не выбрана, то выбираем и ставим галочку.
                 log.info("CURRENT POSITION: $currentPosition")
+                log.info("Visibility: ${imageViewTick.visibility}")
                 if (imageViewTick.visibility == View.INVISIBLE) {
                     HistoryManagerProvider.THIS!!.selectHistory(currentPosition)
                     imageViewTick.visibility = View.VISIBLE
+                    log.info("New visibility: ${imageViewTick.visibility}")
+                    log.info("SHOW TICK")
                 } else {
                     //Снимаем галочку...
                     HistoryManagerProvider.THIS!!.deselectHistory(currentPosition)
                     imageViewTick.visibility = View.INVISIBLE
+                    log.info("HIDE TICK")
                 }
             }
             HistoryListActivityMode.RENAMING -> {
@@ -303,7 +309,7 @@ class HistoryRecyclerViewAdapter : RecyclerView.Adapter<HistoryViewHolder>() {
     fun switchFromBrowsingToSelectingMode() {
         HistoryListActivity.THIS?.activityMode = HistoryListActivityMode.SELECTING
         HistoryViewUtils.hideAllHistoryLabelsAndShowAllCells(this.historyViewHolderList)
-        //        historyBottomBar.getSelectAllButton().setText(R.string.history_select_all);
+        log.info("${HistoryManagerProvider.THIS?.current?.selectedHistory}")
     }
 
     /**
@@ -313,18 +319,13 @@ class HistoryRecyclerViewAdapter : RecyclerView.Adapter<HistoryViewHolder>() {
      */
 
     fun switchFromSelectingToBrowsingMode() {
-        //        final HistoryTopBar historyTopBar = this.parentActivity.getHistoryTopBar();
-        //        final HistoryNavigationFrame navFrame = historyTopBar.getNavigationFrame();
-        //        this.adapterMode = BROWSING;
+        HistoryListActivity.THIS?.activityMode = HistoryListActivityMode.BROWSING
         HistoryManagerProvider.THIS!!.deselectAllHistories()
         HistoryViewUtils.showAllEditButtonsAndHideAllTicks(this.historyViewHolderList)
-        //        navFrame.setEditLabel();
-        //        navFrame.close();
     }
 
     /**
      * resetHistoryHeadline()
-     *
      *
      * Сбрасывает заголовок переименовываемой истории.
      */

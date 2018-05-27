@@ -29,32 +29,34 @@ import java.util.logging.Logger
 class HistoryListActivity : AppCompatActivity() {
 
     companion object {
+
         @SuppressLint("StaticFieldLeak")
         @JvmField
         var THIS: HistoryListActivity? = null
+
         @JvmStatic
-        val log = Logger.getLogger(HistoryListActivity::class.java.name)
+        val log: Logger = Logger.getLogger(HistoryListActivity::class.java.name)
+
+        /**
+         * Изначально адаптер находится в режиме просмотра историй.
+         */
+
+        private val START_ACTIVITY_MODE = HistoryListActivityMode.BROWSING
     }
-
-    /**
-     * Изначально адаптер находится в режиме просмотра историй.
-     */
-
-    private val START_ACTIVITY_MODE = HistoryListActivityMode.BROWSING
 
     var activityMode: HistoryListActivityMode? = START_ACTIVITY_MODE
 
-    var tabLayout: TabLayout? = null
+    private var tabLayout: TabLayout? = null
 
     var viewPager: ViewPager? = null
 
-    val bottomNavigationBar = BottomNavigationBar()
+    private val bottomNavigationBar = BottomNavigationBar()
 
-    val optionBar = OptionBar()
+    private val optionBar = OptionBar()
 
-    val editBar = EditBar()
+    private val editBar = EditBar()
 
-    val dialogWindow = DialogWindow()
+    private val dialogWindow = DialogWindow()
 
     private var descriptionTextView: View? = null
 
@@ -63,6 +65,7 @@ class HistoryListActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         this.setContentView(R.layout.activity_history_list)
         this.init()
+        this.refresh()
     }
 
     private fun init() {
@@ -82,7 +85,7 @@ class HistoryListActivity : AppCompatActivity() {
 
     inner class BottomNavigationBar {
 
-        var bottomNavigationBar: BottomNavigationViewEx? = null
+        private var bottomNavigationBar: BottomNavigationViewEx? = null
 
         internal fun init() {
             this.bottomNavigationBar = findViewById(R.id.bottom_navigation_bar)
@@ -96,7 +99,7 @@ class HistoryListActivity : AppCompatActivity() {
 
     inner class OptionBar {
 
-        var historyOptionRelativeLayout: RelativeLayout? = null
+        private var historyOptionRelativeLayout: RelativeLayout? = null
 
         private var historySelectingModeImageView: ImageView? = null
 
@@ -116,7 +119,11 @@ class HistoryListActivity : AppCompatActivity() {
                     .history_sync_all_histories_image_view)
         }
 
-        internal fun setOptionViewVisibility() {
+        internal fun refresh() {
+            this.setOptionViewVisibility()
+        }
+
+        private fun setOptionViewVisibility() {
             val isVisible = activityMode == HistoryListActivityMode.SHOW_OPTIONS
             HistoryViewUtils.setVisibility(isVisible, this.historyOptionRelativeLayout)
         }
@@ -130,13 +137,13 @@ class HistoryListActivity : AppCompatActivity() {
     fun selectionModeImageViewOnClick(unused: View) {
         RepositoryFragment.CURRENT?.recyclerViewAdapter?.switchFromBrowsingToSelectingMode()
         RepositoryFragment.OPPOSITE?.recyclerViewAdapter?.switchFromBrowsingToSelectingMode()
-        this.refreshScreen()
+        this.refresh()
     }
 
     @XMLProvided(layout = "history_option_view.xml")
     fun syncAllImageViewOnClick(unused: View) {
         RepositoryFragment.CURRENT?.recyclerViewAdapter?.synchronizeAll()
-        this.refreshScreen()
+        this.refresh()
     }
 
     @XMLProvided(layout = "history_option_view.xml")
@@ -155,18 +162,18 @@ class HistoryListActivity : AppCompatActivity() {
                         .ic_history_sort_histories_by_alphabet_image_view)
             }
         }
-        this.refreshScreen()
+        this.refresh()
     }
 
     inner class EditBar {
 
-        var historyEditRelativeLayout: RelativeLayout? = null
+        private var historyEditRelativeLayout: RelativeLayout? = null
 
         private var historyDeleteImageView: ImageView? = null
 
         private var historySyncImageView: ImageView? = null
 
-        var historyRenameImageView: ImageView? = null
+        private var historyRenameImageView: ImageView? = null
 
         internal fun init() {
             this.historyEditRelativeLayout = findViewById(R.id.history_edit_bar)
@@ -175,9 +182,31 @@ class HistoryListActivity : AppCompatActivity() {
             this.historyRenameImageView = findViewById(R.id.history_rename_history_image_view)
         }
 
-        internal fun setEditViewVisibility() {
+        internal fun refresh() {
+            this.setEditViewVisibility()
+            this.setSyncImageViewVisibility()
+            this.setDeleteImageViewVisibility()
+            this.setRenameImageViewVisibility()
+        }
+
+        private fun setEditViewVisibility() {
             val isVisible = activityMode == HistoryListActivityMode.SELECTING
             HistoryViewUtils.setVisibility(isVisible, this.historyEditRelativeLayout)
+        }
+
+        private fun setSyncImageViewVisibility() {
+            val isVisible = !HistoryManagerProvider.THIS?.current?.hasNotSelectedHistories()!!
+            HistoryViewUtils.setVisibility(isVisible, this.historySyncImageView)
+        }
+
+        private fun setDeleteImageViewVisibility() {
+            val isVisible = !HistoryManagerProvider.THIS?.current?.hasNotSelectedHistories()!!
+            HistoryViewUtils.setVisibility(isVisible, this.historyDeleteImageView)
+        }
+
+        private fun setRenameImageViewVisibility() {
+            val isVisible = HistoryManagerProvider.THIS?.current?.hasOneSelectedHistory()!!
+            HistoryViewUtils.setVisibility(isVisible, this.historyRenameImageView)
         }
     }
 
@@ -197,7 +226,7 @@ class HistoryListActivity : AppCompatActivity() {
 //            } else {
 //                adapter.removeSelectedHistories();
 //            }
-//            this.parent.refreshScreen();
+//            this.parent.refresh();
 //        }
     }
 
@@ -213,7 +242,7 @@ class HistoryListActivity : AppCompatActivity() {
 
     inner class DialogWindow {
 
-        internal fun init(){
+        internal fun init() {
 
         }
     }
@@ -242,7 +271,7 @@ class HistoryListActivity : AppCompatActivity() {
         this.viewPager?.offscreenPageLimit = 1
         this.viewPager?.adapter = fragmentAdapter
         this.tabLayout?.setupWithViewPager(this.viewPager)
-        this.tabLayout?.setTabsFromPagerAdapter(fragmentAdapter) // Знаю, что устарел
+        this.tabLayout?.setTabsFromPagerAdapter(fragmentAdapter) // Знаю, что устарел...
         this.viewPager?.addOnPageChangeListener(this.getPageChangeListener())
     }
 
@@ -261,10 +290,10 @@ class HistoryListActivity : AppCompatActivity() {
         log.info("DATA SIZE: " + analyser.inputDataList.size)
     }
 
-    fun refreshScreen() {
+    fun refresh() {
         this.bottomNavigationBar.setBottomNavigationViewVisibility()
-        this.optionBar.setOptionViewVisibility()
-        this.editBar.setEditViewVisibility()
+        this.optionBar.refresh()
+        this.editBar.refresh()
         this.setDescriptionAboutHistoryVisibility()
         RepositoryFragment.CURRENT?.refresh()
     }
@@ -287,7 +316,7 @@ class HistoryListActivity : AppCompatActivity() {
             adapter?.notifyDataSetChanged()
             //Говорим адаптеру, чтобы он переключился в режим просмотра.
             adapter?.switchFromSelectingToBrowsingMode()
-            HistoryListActivity.THIS?.refreshScreen()
+            HistoryListActivity.THIS?.refresh()
         }
 
         override fun onPageScrollStateChanged(state: Int) {
@@ -301,16 +330,18 @@ class HistoryListActivity : AppCompatActivity() {
         } else {
             this.activityMode = HistoryListActivityMode.SHOW_OPTIONS
         }
-        this.refreshScreen()
+        this.refresh()
     }
 
     override fun onBackPressed() {
-        if (this.activityMode == HistoryListActivityMode.SHOW_OPTIONS) {
-            this.activityMode = HistoryListActivityMode.BROWSING
-        } else {
-            super.onBackPressed()
+        when (this.activityMode) {
+            HistoryListActivityMode.SELECTING -> this.activityMode = HistoryListActivityMode
+                    .SHOW_OPTIONS
+            HistoryListActivityMode.SHOW_OPTIONS -> this.activityMode = HistoryListActivityMode
+                    .BROWSING
+            else -> super.onBackPressed()
         }
-        this.refreshScreen()
+        this.refresh()
     }
 
     /**
@@ -322,6 +353,7 @@ class HistoryListActivity : AppCompatActivity() {
         val historyManager = HistoryManagerProvider.THIS?.current
         //Если список пустой, то вывести информацию:
         val isEmpty = historyManager?.hasHistories()
-        HistoryViewUtils.setVisibility(isEmpty!!, this.descriptionTextView)
+        println("HAS HISTORIES: $isEmpty")
+        HistoryViewUtils.setVisibility(!isEmpty!!, this.descriptionTextView)
     }
 }

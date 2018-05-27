@@ -70,24 +70,24 @@ class HistoryViewHolder(itemView: View, private val parentAdapter: HistoryRecycl
      */
 
     private fun installEventHandlers() {
-        this.itemView.setOnClickListener({
+        this.relativeLayout?.setOnClickListener({
             this.parentAdapter.handleOnHistoryClick(this.imageViewTick!!, this.currentPosition)
-            HistoryListActivity.THIS!!.refreshScreen()
+            HistoryListActivity.THIS!!.refresh()
         })
-        this.itemView.setOnLongClickListener({
+        this.relativeLayout?.setOnLongClickListener({
             HistoryListActivity.THIS!!.showOptionsView()
-            HistoryListActivity.THIS!!.refreshScreen()
+            HistoryListActivity.THIS!!.refresh()
             true
         })
-        this.historyRepositoryImageView?.setOnClickListener {
-            this.parentAdapter.synchronize(this.currentPosition)
-            HistoryListActivity.THIS!!.refreshScreen()
-        }
+//        this.historyRepositoryImageView?.setOnClickListener {
+//            this.parentAdapter.synchronize(this.currentPosition)
+//            HistoryListActivity.THIS!!.refresh()
+//        }
         this.historyHeadlineTextEditor?.setOnEditorActionListener {
             _, actionID, _ ->
             this.parentAdapter.completeHistoryHeaderRenaming(actionID
                     , this.historyHeadlineTextEditor!!)
-            HistoryListActivity.THIS!!.refreshScreen()
+            HistoryListActivity.THIS!!.refresh()
             true
         }
     }
