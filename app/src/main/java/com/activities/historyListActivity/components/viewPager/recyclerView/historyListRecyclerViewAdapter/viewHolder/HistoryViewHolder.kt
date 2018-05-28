@@ -58,7 +58,7 @@ class HistoryViewHolder(itemView: View, private val parentAdapter: HistoryRecycl
                 .findViewById(R.id.history_card_repository_image_view)
         this.imageViewTick = itemView.findViewById(R.id.history_card_tick_image_view)
         this.imageViewTickOff = itemView.findViewById(R.id.history_card_cell_image_view)
-        this.historyHeadlineTextEditor = itemView.findViewById(R.id.history_card_headlne_edit_text)
+        this.historyHeadlineTextEditor = itemView.findViewById(R.id.history_card_headline_edit_text)
         this.labelImageView = itemView.findViewById(R.id.history_card_label_image_view)
         //Установка обработчиков событий:
         this.installEventHandlers()
@@ -79,14 +79,9 @@ class HistoryViewHolder(itemView: View, private val parentAdapter: HistoryRecycl
             HistoryListActivity.THIS!!.refresh()
             true
         })
-//        this.historyRepositoryImageView?.setOnClickListener {
-//            this.parentAdapter.synchronize(this.currentPosition)
-//            HistoryListActivity.THIS!!.refresh()
-//        }
-        this.historyHeadlineTextEditor?.setOnEditorActionListener {
-            _, actionID, _ ->
-            this.parentAdapter.completeHistoryHeaderRenaming(actionID
-                    , this.historyHeadlineTextEditor!!)
+        this.historyHeadlineTextEditor?.setOnEditorActionListener { _, actionID, _
+            -> this.parentAdapter.completeHistoryHeaderRenaming(actionID
+                , this.historyHeadlineTextEditor!!)
             HistoryListActivity.THIS!!.refresh()
             true
         }

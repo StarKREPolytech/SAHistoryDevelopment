@@ -276,6 +276,7 @@ class HistoryRecyclerViewAdapter : RecyclerView.Adapter<HistoryViewHolder>() {
      * changeMode() переключает режим адаптера.
      */
 
+    //Пока не используется:
     fun changeMode(imageViewTick: ImageView, currentPosition: Int) {
         when (HistoryListActivity.THIS?.activityMode) {
             HistoryListActivityMode.BROWSING -> {
@@ -351,6 +352,7 @@ class HistoryRecyclerViewAdapter : RecyclerView.Adapter<HistoryViewHolder>() {
             val message = isValidVsMsg.second
             if (isValidNewName) {
                 //Можно переименовывать:
+                log.info("SUCCESS OF RENAMING!!!")
                 Toasty.success(HistoryListActivity.THIS!!, message).show()
                 this.setNewHeadlineInHistory(newText)
             } else {
@@ -407,20 +409,14 @@ class HistoryRecyclerViewAdapter : RecyclerView.Adapter<HistoryViewHolder>() {
         headline?.visibility = View.VISIBLE
         holder?.historyHeadlineTextEditor?.visibility = View.INVISIBLE
         //Теперь убираем клавиатуру с экрана:
-        val view = HistoryListActivity.THIS!!.currentFocus
-        if (view != null) {
-            val inputMethodService = Context.INPUT_METHOD_SERVICE
-            val inputMethodManager = HistoryListActivity.THIS!!
-                    .getSystemService(inputMethodService) as InputMethodManager
-            //InputMethodManager точно не null:
-            inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
-            //Прячем все кнопки "Редактировать":
-            HistoryViewUtils.hideAllHistoryLabelsAndShowAllCells(this.historyViewHolderList)
-            //Над переименованной кнопкой ставим галочку:
-            holder?.imageViewTick?.visibility = View.VISIBLE
-            //Переходим в режим выбора:
-            HistoryListActivity.THIS?.activityMode = HistoryListActivityMode.SELECTING
-        }
+        HistoryListActivity.THIS?.keyBoardSupplier?.hideKeyBoard()
+        //Прячем все кнопки "Редактировать":
+        HistoryViewUtils.hideAllHistoryLabelsAndShowAllCells(this.historyViewHolderList)
+        //Над переименованной кнопкой ставим галочку:
+        holder?.imageViewTick?.visibility = View.VISIBLE
+        //Переходим в режим выбора:
+        log.info("Переименовано!!!")
+        HistoryListActivity.THIS?.activityMode = HistoryListActivityMode.SELECTING
     }
 
     /**
@@ -432,7 +428,7 @@ class HistoryRecyclerViewAdapter : RecyclerView.Adapter<HistoryViewHolder>() {
 
     fun synchronize(currentPosition: Int) {
         val isSynchronized = HistoryManagerProvider.THIS!!.synchronize(currentPosition)
-        this.synchronize(isSynchronized)
+        this.notifySynchronizedData(isSynchronized)
     }
 
     /**
@@ -448,7 +444,7 @@ class HistoryRecyclerViewAdapter : RecyclerView.Adapter<HistoryViewHolder>() {
                     , Toast.LENGTH_LONG).show()
         } else {
             val isSuccessfulSync = HistoryManagerProvider.THIS!!.synchronizeAll()
-            this.synchronize(isSuccessfulSync)
+            this.notifySynchronizedData(isSuccessfulSync)
         }
     }
 
@@ -460,7 +456,7 @@ class HistoryRecyclerViewAdapter : RecyclerView.Adapter<HistoryViewHolder>() {
      * синхронизация или нет.
      */
 
-    private fun synchronize(isSynchronized: Boolean) {
+    private fun notifySynchronizedData(isSynchronized: Boolean) {
         if (isSynchronized) {
             this.notifyDataSetChanged()
             //Показываем сообщение на экране:
@@ -469,6 +465,11 @@ class HistoryRecyclerViewAdapter : RecyclerView.Adapter<HistoryViewHolder>() {
                     .getRepositoryHeadlinePostfix()
             this.showSyncToast(HistoryViewUtils.convertToPluralWord(from), HistoryViewUtils.convertToPluralWord(to))
         }
+    }
+
+    fun synchronizeSelected() {
+        HistoryManagerProvider.THIS?.synchronizeSelected()
+        this.notifySynchronizedData(true)
     }
 
     /**

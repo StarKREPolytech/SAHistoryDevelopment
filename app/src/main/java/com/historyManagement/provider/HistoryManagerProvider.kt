@@ -255,6 +255,10 @@ class HistoryManagerProvider {
         return hasSynchronized
     }
 
+    fun synchronizeSelected() = this.current!!.selectedHistories.forEach { history ->
+        this.synchronize(history)
+    }
+
     /**
      * String checkUniqueHeadlineAndRenameIfNecessary(final String headline
      * , final List<History> otherHistoryList) проверяет, есть ли история в

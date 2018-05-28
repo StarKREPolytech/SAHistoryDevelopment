@@ -1,6 +1,7 @@
 package com.activities.historyListActivity
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -9,6 +10,7 @@ import android.support.v4.app.Fragment
 import android.support.v4.view.ViewPager
 import android.support.v7.widget.Toolbar
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
@@ -18,7 +20,6 @@ import com.activities.historyListActivity.components.viewPager.adapter.Repositor
 import com.activities.historyListActivity.components.viewPager.fragment.RepositoryFragment
 import com.activities.currentHistoryActivity.CurrentHistoryActivity
 import com.activities.historyListActivity.mode.HistoryListActivityMode
-import com.annotations.NeedImplementation
 import com.annotations.XMLProvided
 import com.historyManagement.history.historyData.History
 import com.historyManagement.provider.HistoryManagerProvider
@@ -58,7 +59,7 @@ class HistoryListActivity : AppCompatActivity() {
 
     internal val editBar = EditBar()
 
-    private val dialogView = DialogView()
+    internal val keyBoardSupplier = KeyBoardSupplier()
 
     private var descriptionTextView: View? = null
 
@@ -76,7 +77,6 @@ class HistoryListActivity : AppCompatActivity() {
         this.bottomNavigationBar.init()
         this.optionBar.init()
         this.editBar.init()
-        this.dialogView.init()
         this.descriptionTextView = this.findViewById(R.id.history_list_activity_text_description)
     }
 
@@ -224,7 +224,7 @@ class HistoryListActivity : AppCompatActivity() {
             HistoryViewUtils.setVisibility(isVisible, this.historyRenameImageView)
         }
 
-        fun setSelectAllHistoriesText(){
+        fun setSelectAllHistoriesText() {
             val historyManager = HistoryManagerProvider.THIS?.current
             log.info("COUNT SELECTED: " + historyManager?.selectedHistories?.size)
             log.info("COUNT SUMMARY: " + historyManager?.selectedHistories?.size)
@@ -248,16 +248,19 @@ class HistoryListActivity : AppCompatActivity() {
 
     @XMLProvided(layout = "history_edit_view.xml")
     fun syncImageViewOnClick(unused: View) {
-
+        RepositoryFragment.CURRENT?.recyclerViewAdapter?.synchronizeSelected()
+        this.refresh()
     }
 
     @XMLProvided(layout = "history_edit_view.xml")
     fun renameImageViewOnClick(unused: View) {
-
+        RepositoryFragment.CURRENT?.recyclerViewAdapter?.renameSelectedHistory()
+        this.keyBoardSupplier.showKeyBoard()
+        this.refresh()
     }
 
     @XMLProvided(layout = "history_edit_view.xml")
-    fun selectAllHistories(unused: View){
+    fun selectAllHistories(unused: View) {
         val adapter = RepositoryFragment.CURRENT?.recyclerViewAdapter
         //Немного неадекватная проверка:
         val historySelectAllString = this.getString(R.string.history_select_all)
@@ -270,16 +273,6 @@ class HistoryListActivity : AppCompatActivity() {
             textView?.setText(R.string.history_select_all)
         }
         this.refresh()
-    }
-
-    inner class DialogView {
-
-        var dialogRelativeLayout: RelativeLayout? = null
-
-        @NeedImplementation
-        internal fun init() {
-//            this.dialogRelativeLayout = findViewById(...)
-        }
     }
 
     private fun initViewPager() {
@@ -392,7 +385,29 @@ class HistoryListActivity : AppCompatActivity() {
         val historyManager = HistoryManagerProvider.THIS?.current
         //Если список пустой, то вывести информацию:
         val isEmpty = historyManager?.hasHistories()
-        println("HAS HISTORIES: $isEmpty")
         HistoryViewUtils.setVisibility(!isEmpty!!, this.descriptionTextView)
+    }
+
+    inner class KeyBoardSupplier {
+
+        private var keyBoardFocus: View? = null
+
+        internal fun showKeyBoard() {
+            this.keyBoardFocus = currentFocus
+            log.info("VIEW: ${this.keyBoardFocus}")
+            val inputMethodService = Context.INPUT_METHOD_SERVICE
+            val inputMethodManager = HistoryListActivity.THIS!!
+                    .getSystemService(inputMethodService) as InputMethodManager
+            //InputMethodManager точно не null:
+            inputMethodManager.showSoftInput(this.keyBoardFocus, InputMethodManager.SHOW_IMPLICIT)
+        }
+
+        fun hideKeyBoard() {
+            log.info("VIEW: ${this.keyBoardFocus}")
+            val inputMethodService = Context.INPUT_METHOD_SERVICE
+            val inputMethodManager = HistoryListActivity.THIS!!
+                    .getSystemService(inputMethodService) as InputMethodManager
+            inputMethodManager.hideSoftInputFromWindow(this.keyBoardFocus!!.windowToken, 0)
+        }
     }
 }

@@ -85,13 +85,14 @@
 
 
             <EditText
-                android:id="@+id/history_card_headlne_edit_text"
+                android:id="@+id/history_card_headline_edit_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
                 android:layout_alignStart="@+id/history_card_headline"
+                android:layout_alignTop="@+id/history_card_headline"
                 android:background="@color/history_card_color"
                 android:hint="@string/put_new_history_name"
+                android:textColorHint="@color/light_gray"
                 android:imeOptions="actionDone"
                 android:inputType="text"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
