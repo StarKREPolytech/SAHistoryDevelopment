@@ -1,13 +1,12 @@
 package com.activities.historyListActivity.components.viewPager.recyclerView.historyListRecyclerViewAdapter
 
-import android.content.Context
+import android.os.Handler
 import android.support.v7.widget.RecyclerView
 import android.util.Pair
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
@@ -196,7 +195,19 @@ class HistoryRecyclerViewAdapter : RecyclerView.Adapter<HistoryViewHolder>() {
         HistoryManagerProvider.THIS!!.removeSelectedHistories()
         this.notifyDataSetChanged()
         HistoryListActivity.THIS?.refresh()
-        Toasty.info(HistoryListActivity.THIS!!, "Удалено: $selectedSize").show()
+        HistoryListActivity.THIS?.popupCancelButton?.showPopupCancelButton(HistoryListActivity
+                .CancelActionType.CANCEL_REMOVE)
+        this.startRemovedHistoriesClearingCountdown()
+    }
+
+    private fun startRemovedHistoriesClearingCountdown() {
+        val millis: Long = 5000
+        Handler().postDelayed({
+            if (HistoryListActivity.THIS?.popupCancelButton!!.isNotPressedCancelButton()) {
+                HistoryListActivity.THIS?.popupCancelButton?.hidePopupCancelButton()
+            }
+            HistoryManagerProvider.THIS?.clearRemovedHistories()
+        }, millis)
     }
 
     /**
@@ -508,6 +519,7 @@ class HistoryRecyclerViewAdapter : RecyclerView.Adapter<HistoryViewHolder>() {
      * makeAction() неявно выполняет действие над историями,
      * которое было установлено в соответствии с конфигуациями для адаптера.
      */
+
 
     fun makeAction() {
         //Совершили действие:

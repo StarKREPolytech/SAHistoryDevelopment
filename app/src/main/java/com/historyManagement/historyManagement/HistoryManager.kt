@@ -36,7 +36,7 @@ abstract class HistoryManager {
     }
 
     /**
-     * 1.) histories - это ArrayList, который хранит в себе экземпляры историй;
+     * 1.) histories - это List, который хранит в себе экземпляры историй;
      * 2.) selectedHistories - это HashSet, который хранит выбранные истории
      * в процессе редактирования.
      */
@@ -46,6 +46,8 @@ abstract class HistoryManager {
     val selectedHistories: MutableSet<History> = mutableSetOf()
 
     var selectedHistory: History? = null
+
+    var removedHistories: MutableList<History> = mutableListOf()
 
     init {
         this.generateHistories()

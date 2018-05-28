@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment
 import android.support.v4.view.ViewPager
 import android.support.v7.widget.Toolbar
 import android.view.View
+import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.RelativeLayout
@@ -61,6 +62,8 @@ class HistoryListActivity : AppCompatActivity() {
 
     internal val keyBoardSupplier = KeyBoardSupplier()
 
+    internal val popupCancelButton = PopupCancelButton()
+
     private var descriptionTextView: View? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -77,6 +80,7 @@ class HistoryListActivity : AppCompatActivity() {
         this.bottomNavigationBar.init()
         this.optionBar.init()
         this.editBar.init()
+        this.popupCancelButton.init()
         this.descriptionTextView = this.findViewById(R.id.history_list_activity_text_description)
     }
 
@@ -167,6 +171,15 @@ class HistoryListActivity : AppCompatActivity() {
         this.refresh()
     }
 
+    fun showOptionsView() {
+        if (this.activityMode == HistoryListActivityMode.SHOW_OPTIONS) {
+            this.activityMode = HistoryListActivityMode.BROWSING
+        } else {
+            this.activityMode = HistoryListActivityMode.SHOW_OPTIONS
+        }
+        this.refresh()
+    }
+
     inner class EditBar {
 
         private var historyEditRelativeLayout: RelativeLayout? = null
@@ -237,6 +250,7 @@ class HistoryListActivity : AppCompatActivity() {
                 this.selectAllHistoriesTextView?.setText(R.string.history_select_all)
             }
         }
+
     }
 
     @XMLProvided(layout = "history_edit_view.xml")
@@ -273,6 +287,53 @@ class HistoryListActivity : AppCompatActivity() {
             textView?.setText(R.string.history_select_all)
         }
         this.refresh()
+    }
+
+    inner class PopupCancelButton {
+
+        var popupCancelButtonRelativeLayout: RelativeLayout? = null
+
+        var popupCancelButtonTextView: TextView? = null
+
+        private var notPressedCancelButton = true
+
+        fun isNotPressedCancelButton(): Boolean = this.notPressedCancelButton
+
+        internal fun init() {
+            this.popupCancelButtonRelativeLayout = findViewById(R.id
+                    .history_popup_cancel_button_relative_layout)
+            this.popupCancelButtonTextView = findViewById(R.id
+                    .history_popup_cancel_button_text_view)
+        }
+
+        @SuppressLint("PrivateResource")
+        fun showPopupCancelButton(cancelActionType: CancelActionType) {
+            this.popupCancelButtonRelativeLayout?.visibility = View.VISIBLE
+            when(cancelActionType){
+                CancelActionType.CANCEL_REMOVE -> {
+                    this.popupCancelButtonTextView?.text = "Отменить удаление"
+                    this.popupCancelButtonRelativeLayout?.setOnClickListener({
+                        popupCancelButton.notPressedCancelButton = false
+                        HistoryManagerProvider.THIS?.restoreRemovedHistories()
+                        RepositoryFragment.CURRENT?.recyclerViewAdapter?.notifyDataSetChanged()
+                        hidePopupCancelButton()
+                    })
+                }
+            }
+            this.popupCancelButtonRelativeLayout?.startAnimation(AnimationUtils.loadAnimation(THIS
+                    , R.anim.abc_fade_in))
+        }
+
+        @SuppressLint("PrivateResource")
+        fun hidePopupCancelButton() {
+            this.popupCancelButtonRelativeLayout?.startAnimation(AnimationUtils.loadAnimation(THIS
+                    , R.anim.abc_fade_out))
+            this.popupCancelButtonRelativeLayout?.visibility = View.INVISIBLE
+        }
+    }
+
+    enum class CancelActionType {
+        CANCEL_REMOVE
     }
 
     private fun initViewPager() {
@@ -351,13 +412,27 @@ class HistoryListActivity : AppCompatActivity() {
         }
     }
 
-    fun showOptionsView() {
-        if (this.activityMode == HistoryListActivityMode.SHOW_OPTIONS) {
-            this.activityMode = HistoryListActivityMode.BROWSING
-        } else {
-            this.activityMode = HistoryListActivityMode.SHOW_OPTIONS
+    inner class KeyBoardSupplier {
+
+        private var keyBoardFocus: View? = null
+
+        internal fun showKeyBoard() {
+            this.keyBoardFocus = currentFocus
+            log.info("VIEW: ${this.keyBoardFocus}")
+            val inputMethodService = Context.INPUT_METHOD_SERVICE
+            val inputMethodManager = HistoryListActivity.THIS!!
+                    .getSystemService(inputMethodService) as InputMethodManager
+            //InputMethodManager точно не null:
+            inputMethodManager.showSoftInput(this.keyBoardFocus, InputMethodManager.SHOW_IMPLICIT)
         }
-        this.refresh()
+
+        fun hideKeyBoard() {
+            log.info("VIEW: ${this.keyBoardFocus}")
+            val inputMethodService = Context.INPUT_METHOD_SERVICE
+            val inputMethodManager = HistoryListActivity.THIS!!
+                    .getSystemService(inputMethodService) as InputMethodManager
+            inputMethodManager.hideSoftInputFromWindow(this.keyBoardFocus!!.windowToken, 0)
+        }
     }
 
     override fun onBackPressed() {
@@ -386,28 +461,5 @@ class HistoryListActivity : AppCompatActivity() {
         //Если список пустой, то вывести информацию:
         val isEmpty = historyManager?.hasHistories()
         HistoryViewUtils.setVisibility(!isEmpty!!, this.descriptionTextView)
-    }
-
-    inner class KeyBoardSupplier {
-
-        private var keyBoardFocus: View? = null
-
-        internal fun showKeyBoard() {
-            this.keyBoardFocus = currentFocus
-            log.info("VIEW: ${this.keyBoardFocus}")
-            val inputMethodService = Context.INPUT_METHOD_SERVICE
-            val inputMethodManager = HistoryListActivity.THIS!!
-                    .getSystemService(inputMethodService) as InputMethodManager
-            //InputMethodManager точно не null:
-            inputMethodManager.showSoftInput(this.keyBoardFocus, InputMethodManager.SHOW_IMPLICIT)
-        }
-
-        fun hideKeyBoard() {
-            log.info("VIEW: ${this.keyBoardFocus}")
-            val inputMethodService = Context.INPUT_METHOD_SERVICE
-            val inputMethodManager = HistoryListActivity.THIS!!
-                    .getSystemService(inputMethodService) as InputMethodManager
-            inputMethodManager.hideSoftInputFromWindow(this.keyBoardFocus!!.windowToken, 0)
-        }
     }
 }

@@ -52,14 +52,32 @@
         android:layout_marginBottom="52dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-    <!--<include-->
-        <!--android:id="@+id/history_dialog_view"-->
-        <!--layout="@layout/dialog_view"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="140dp"-->
-        <!--android:layout_marginTop="100dp"-->
-        <!--android:visibility="invisible"-->
-        <!--app:layout_anchorGravity="top|center" />-->
+    <RelativeLayout
+        android:id="@+id/history_popup_cancel_button_relative_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="53dp"
+        android:visibility="invisible"
+        app:layout_anchor="@+id/relativeLayout"
+        app:layout_anchorGravity="top|center">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            app:srcCompat="@drawable/history_popup_cancel_button" />
+
+        <TextView
+            android:id="@+id/history_popup_cancel_button_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="Отменить удаление"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+
+    </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/relativeLayout"
