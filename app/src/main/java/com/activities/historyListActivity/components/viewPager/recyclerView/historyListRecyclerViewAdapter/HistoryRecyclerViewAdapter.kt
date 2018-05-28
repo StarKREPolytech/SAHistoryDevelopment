@@ -189,8 +189,6 @@ class HistoryRecyclerViewAdapter : RecyclerView.Adapter<HistoryViewHolder>() {
      */
 
     fun removeSelectedHistories() {
-        val historyManager = HistoryManagerProvider.THIS!!.current
-        val selectedSize = historyManager!!.selectedHistories.size
         //Истории которые мы не видим через RecyclerView просто удаляем:
         HistoryManagerProvider.THIS!!.removeSelectedHistories()
         this.notifyDataSetChanged()
@@ -201,7 +199,7 @@ class HistoryRecyclerViewAdapter : RecyclerView.Adapter<HistoryViewHolder>() {
     }
 
     private fun startRemovedHistoriesClearingCountdown() {
-        val millis: Long = 5000
+        val millis: Long = 3000
         Handler().postDelayed({
             val popupCancelButton = HistoryListActivity.THIS?.popupCancelButton
             popupCancelButton?.hidePopupCancelButton()

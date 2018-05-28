@@ -207,6 +207,7 @@ class HistoryListActivity : AppCompatActivity() {
             this.setDeleteImageViewVisibility()
             this.setRenameImageViewVisibility()
             this.setSelectAllHistoriesText()
+            this.setSelectAllTextViewVisibility()
         }
 
         private fun setEditViewVisibility() {
@@ -235,6 +236,11 @@ class HistoryListActivity : AppCompatActivity() {
         private fun setRenameImageViewVisibility() {
             val isVisible = HistoryManagerProvider.THIS?.current?.hasOneSelectedHistory()!!
             HistoryViewUtils.setVisibility(isVisible, this.historyRenameImageView)
+        }
+
+        private fun setSelectAllTextViewVisibility(){
+            val isVisible = HistoryManagerProvider.THIS?.current?.hasHistories()!!
+            HistoryViewUtils.setVisibility(isVisible, this.selectAllHistoriesTextView)
         }
 
         fun setSelectAllHistoriesText() {
@@ -315,6 +321,7 @@ class HistoryListActivity : AppCompatActivity() {
                         HistoryManagerProvider.THIS?.restoreRemovedHistories()
                         RepositoryFragment.CURRENT?.recyclerViewAdapter?.notifyDataSetChanged()
                         hidePopupCancelButton()
+                        refresh()
                     })
                 }
             }

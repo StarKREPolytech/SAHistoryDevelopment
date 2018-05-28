@@ -1,19 +1,20 @@
 package com.activities.historyListActivity.components.viewPager.fragment
 
 import android.annotation.SuppressLint
-
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.widget.NestedScrollView
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.LinearSnapHelper
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.SnapHelper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.starkre.sleepAlertHistory.R
-import com.activities.historyListActivity.HistoryListActivity
+import android.view.animation.LayoutAnimationController
 import com.activities.historyListActivity.components.viewPager.recyclerView.historyListRecyclerViewAdapter.HistoryRecyclerViewAdapter
 import com.annotations.FuckingStaticSingleton
+import com.example.starkre.sleepAlertHistory.R
 import java.util.logging.Logger
 
 @FuckingStaticSingleton
@@ -81,6 +82,8 @@ class RepositoryFragment : Fragment() {
         recyclerView?.adapter = recyclerViewAdapter
         this.recyclerView = recyclerView
         this.recyclerViewAdapter = recyclerViewAdapter
+        val snapHelper = LinearSnapHelper()
+        snapHelper.attachToRecyclerView(this.recyclerView)
     }
 
     fun refresh() {
