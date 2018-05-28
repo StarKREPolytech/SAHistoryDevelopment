@@ -47,7 +47,7 @@ abstract class HistoryManager {
 
     var selectedHistory: History? = null
 
-    var removedHistories: MutableList<History> = mutableListOf()
+    var removedHistories: MutableList<Pair<History, Int>> = mutableListOf()
 
     init {
         this.generateHistories()

@@ -191,23 +191,37 @@ class HistoryManagerProvider {
     fun removeSelectedHistories() {
         this.lastWithRemovedHistories = this.current
         val historySet = this.lastWithRemovedHistories!!.selectedHistories
-        val removedHistoryList = this.lastWithRemovedHistories?.removedHistories
-        removedHistoryList?.addAll(historySet)
-        for (i in removedHistoryList!!.indices) {
-            val history = removedHistoryList[i]
+        val removedList = mutableListOf<History>()
+        removedList.addAll(historySet)
+        this.indexHistories(removedList)
+
+        for (i in removedList.indices) {
+            val history = removedList[i]
             this.removeHistory(history)
         }
-        removedHistoryList.forEach({
-            log.info("REMOVED: $it")
-        })
     }
 
-    private var lastWithRemovedHistories : HistoryManager? = null
+    private fun indexHistories(removedList: MutableList<History>) {
+        for (history in removedList) {
+            val position = this.current?.histories?.indexOf(history)
+            this.current?.removedHistories?.add(Pair(history, position!!))
+        }
+    }
+
+    private var lastWithRemovedHistories: HistoryManager? = null
 
     fun clearRemovedHistories() = this.lastWithRemovedHistories?.removedHistories?.clear()
 
-    fun restoreRemovedHistories() = this.lastWithRemovedHistories?.histories?.addAll(this.current!!
-            .removedHistories)
+    fun restoreRemovedHistories() {
+        val removedHistories = this.lastWithRemovedHistories!!.removedHistories
+        removedHistories.sortBy { it.second }
+        for (historyVsPosition in removedHistories) {
+            val history = historyVsPosition.first
+            val position = historyVsPosition.second
+            this.lastWithRemovedHistories?.histories?.add(position, history)
+        }
+        this.clearRemovedHistories()
+    }
 
     /**
      * removeHistory(final History history) удаляет историю из списка.

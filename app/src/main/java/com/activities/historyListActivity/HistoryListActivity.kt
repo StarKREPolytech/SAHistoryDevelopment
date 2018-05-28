@@ -295,9 +295,7 @@ class HistoryListActivity : AppCompatActivity() {
 
         var popupCancelButtonTextView: TextView? = null
 
-        private var notPressedCancelButton = true
-
-        fun isNotPressedCancelButton(): Boolean = this.notPressedCancelButton
+        var notPressedCancelButton = true
 
         internal fun init() {
             this.popupCancelButtonRelativeLayout = findViewById(R.id
@@ -309,7 +307,7 @@ class HistoryListActivity : AppCompatActivity() {
         @SuppressLint("PrivateResource")
         fun showPopupCancelButton(cancelActionType: CancelActionType) {
             this.popupCancelButtonRelativeLayout?.visibility = View.VISIBLE
-            when(cancelActionType){
+            when (cancelActionType) {
                 CancelActionType.CANCEL_REMOVE -> {
                     this.popupCancelButtonTextView?.text = "Отменить удаление"
                     this.popupCancelButtonRelativeLayout?.setOnClickListener({
@@ -326,9 +324,11 @@ class HistoryListActivity : AppCompatActivity() {
 
         @SuppressLint("PrivateResource")
         fun hidePopupCancelButton() {
-            this.popupCancelButtonRelativeLayout?.startAnimation(AnimationUtils.loadAnimation(THIS
-                    , R.anim.abc_fade_out))
-            this.popupCancelButtonRelativeLayout?.visibility = View.INVISIBLE
+            if (this.popupCancelButtonRelativeLayout?.visibility == View.VISIBLE) {
+                this.popupCancelButtonRelativeLayout?.startAnimation(AnimationUtils
+                        .loadAnimation(THIS, R.anim.abc_fade_out))
+                this.popupCancelButtonRelativeLayout?.visibility = View.INVISIBLE
+            }
         }
     }
 

@@ -203,9 +203,8 @@ class HistoryRecyclerViewAdapter : RecyclerView.Adapter<HistoryViewHolder>() {
     private fun startRemovedHistoriesClearingCountdown() {
         val millis: Long = 5000
         Handler().postDelayed({
-            if (HistoryListActivity.THIS?.popupCancelButton!!.isNotPressedCancelButton()) {
-                HistoryListActivity.THIS?.popupCancelButton?.hidePopupCancelButton()
-            }
+            val popupCancelButton = HistoryListActivity.THIS?.popupCancelButton
+            popupCancelButton?.hidePopupCancelButton()
             HistoryManagerProvider.THIS?.clearRemovedHistories()
         }, millis)
     }
