@@ -286,7 +286,7 @@ class HistoryManagerProvider {
     }
 
     /**
-     * String checkUniqueHeadlineAndRenameIfNecessary(final String headline
+     * String checkUniqueHeadlineAndRenameIfNecessary(final String headlineTextView
      * , final List<History> otherHistoryList) проверяет, есть ли история в
      * противоположном хранилище с таким же именем, если да, то добавляет к
      * синхронизируемой истории постфикс репозитория, откуда история была

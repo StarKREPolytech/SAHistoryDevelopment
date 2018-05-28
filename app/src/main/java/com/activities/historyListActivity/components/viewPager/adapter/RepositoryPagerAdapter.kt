@@ -5,7 +5,10 @@ import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
 
 /**
- * Created by StarKRE on 23.05.2018.
+ * @author Игорь Гулькин 23.05.2018.
+ *
+ * Класс RepositoryPagerAdapter "устаревший" стандартный адаптер,
+ * который отслеживает переключение между вкладками на HistoryListActivity
  */
 
 class RepositoryPagerAdapter(fragmentManager: FragmentManager
@@ -13,15 +16,9 @@ class RepositoryPagerAdapter(fragmentManager: FragmentManager
                              , private val titles: List<String>)
     : FragmentStatePagerAdapter(fragmentManager) {
 
-    override fun getItem(position: Int): Fragment {
-        return this.fragments[position]
-    }
+    override fun getItem(position: Int): Fragment = this.fragments[position]
 
-    override fun getCount(): Int {
-        return this.fragments.size
-    }
+    override fun getCount(): Int = this.fragments.size
 
-    override fun getPageTitle(position: Int): CharSequence? {
-        return this.titles[position]
-    }
+    override fun getPageTitle(position: Int): CharSequence? = this.titles[position]
 }

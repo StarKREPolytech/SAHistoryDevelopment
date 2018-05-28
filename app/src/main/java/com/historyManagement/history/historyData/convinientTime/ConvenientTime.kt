@@ -10,10 +10,10 @@ class ConvenientTime(milliTime: Long) {
     val date: Date = Date(milliTime)
 
     @SuppressLint("SimpleDateFormat")
-    val dateFormat: DateFormat = SimpleDateFormat("dd.MM.yyyy")
+    private val dateFormat: DateFormat = SimpleDateFormat("dd.MM.yyyy")
 
     @SuppressLint("SimpleDateFormat")
-    val timeFormat: DateFormat = SimpleDateFormat("HH:mm")
+    private val timeFormat: DateFormat = SimpleDateFormat("HH:mm")
 
     /**
      * convertToLongString() собирает полную информацию о дне.

@@ -10,6 +10,7 @@ import android.view.View
 import android.widget.TextView
 import com.example.starkre.sleepAlertHistory.R
 import com.activities.historyListActivity.HistoryListActivity
+import com.annotations.FuckingStaticSingleton
 import com.annotations.XMLProvided
 import com.historyManagement.history.historyData.DataAnalyser
 import com.historyManagement.provider.HistoryManagerProvider
@@ -22,15 +23,29 @@ import java.util.*
 import java.util.logging.Logger
 
 /**
- * Created by StarKRE on 23.05.2018.
+ * @author Игорь Гулькин на 23.05.2018.
+ *
+ * Класс CurrentHistoryActivity описывает окно конкретной истории.
  */
+
+@FuckingStaticSingleton
 class CurrentHistoryActivity : AppCompatActivity() {
 
     companion object {
         @SuppressLint("StaticFieldLeak")
-        @JvmField  var THIS: CurrentHistoryActivity? = null
-        @JvmStatic val log = Logger.getLogger(CurrentHistoryActivity::class.java.name)
+        @JvmField
+        var THIS: CurrentHistoryActivity? = null
+        @JvmStatic
+        val log: Logger = Logger.getLogger(CurrentHistoryActivity::class.java.name)
     }
+
+    /**
+     * 1.) inScopeHistory история, на которую был переход;
+     * 2.) pieTirednessChar - круговая диаграмма уровня усталости;
+     * 3) headlineTextView - заголовок истории на окне;
+     * 4.) passedDistanceTextView - информация о пройденном пути;
+     * 5.) warningNumberTextView - информация о предупреждениях;
+     */
 
     private var inScopeHistory = HistoryManagerProvider.THIS?.inScopeHistory
 
@@ -45,15 +60,16 @@ class CurrentHistoryActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         THIS = this
         super.onCreate(savedInstanceState)
+        //Инициализация ресурсов:
         this.setContentView(R.layout.current_history_activity)
         this.headlineTextView = this.findViewById(R.id.history_activity_headline_text_view)
         this.passedDistanceTextView = this.findViewById(R.id.history_distance_text_view)
         this.warningNumberTextView = this.findViewById(R.id.history_warnings_text_view)
-        this.installPieTirednessChart()
+        //Создание круговой диаграммы:
+        this.initPieTirednessChart()
     }
 
-
-    private fun installPieTirednessChart() {
+    private fun initPieTirednessChart() {
         this.pieTirednessChart = this.findViewById(R.id.history_tiredness_pie_chart)
         this.pieTirednessChart?.setUsePercentValues(true)
         this.pieTirednessChart?.description?.isEnabled = false
@@ -64,8 +80,12 @@ class CurrentHistoryActivity : AppCompatActivity() {
         this.configurePieTirednessChartLegend()
     }
 
+    /**
+     * onStart() инициализирует activity при переходе.
+     */
+
     @SuppressLint("SetTextI18n")
-    public override fun onStart() {
+    override fun onStart() {
         super.onStart()
         val dataAnalyser = this.inScopeHistory?.dataAnalyser
         this.headlineTextView?.text = this.inScopeHistory?.headline
@@ -75,6 +95,11 @@ class CurrentHistoryActivity : AppCompatActivity() {
         this.warningNumberTextView?.text = dataAnalyser.getWarningNumber().toString()
     }
 
+    /**
+     * getPieData(dataAnalyser: DataAnalyser) создает данные для диаграммы.
+     *
+     * @param dataAnalyser - анализатор уровней усталости.
+     */
 
     private fun getPieData(dataAnalyser: DataAnalyser): PieData {
         val low = (dataAnalyser.low * 100).toInt()
@@ -112,14 +137,28 @@ class CurrentHistoryActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * extractColor(id: Int) извлекает цвет из ресурсов.
+     *
+     * @param id - @color из директории res.
+     */
 
     private fun extractColor(id: Int): Int {
         return ContextCompat.getColor(this.applicationContext, id)
     }
 
+    /**
+     * configurePieTirednessEntryLabel() настраивает логотипы на диаграмме.
+     */
+
     private fun configurePieTirednessEntryLabel() {
+        //Без логотипов:
         this.pieTirednessChart?.setDrawEntryLabels(false)
     }
+
+    /**
+     * configurePieTirednessChartLegend() настраивает легенду диаграммы.
+     */
 
     private fun configurePieTirednessChartLegend() {
         val legend = this.pieTirednessChart?.legend
@@ -132,9 +171,14 @@ class CurrentHistoryActivity : AppCompatActivity() {
         legend?.form = Legend.LegendForm.SQUARE
     }
 
+    /**
+     * backToHistoryList(unused: View) возращается на окно списка историй.
+     *
+     * @param unused не используется.
+     */
+
     @XMLProvided(layout = "activity_history.xml")
-    fun backToHistoryList(view: View) {
+    fun backToHistoryList(unused: View) {
         this.startActivity(Intent(this, HistoryListActivity::class.java))
-        log.info("BBBBBB")
     }
 }

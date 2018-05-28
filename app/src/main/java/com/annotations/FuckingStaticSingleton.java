@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 /**
  * @author Игорь Гулькин 13.05.2018.
  *
- * Так как в проекте нет IoC && Dependency Injection principle,
+ * Так как в проекте нет IoC && Dependency Injection Principle,
  * то над всеми классами, которые должны были быть "заинжекчены"
  * будут стоять эти аннотации.
  */

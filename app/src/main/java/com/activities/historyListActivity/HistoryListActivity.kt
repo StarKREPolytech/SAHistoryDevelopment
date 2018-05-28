@@ -360,7 +360,7 @@ class HistoryListActivity : AppCompatActivity() {
                 val cloudFragment = RepositoryFragment()
                 this.add(localFragment)
                 this.add(cloudFragment)
-                RepositoryFragment.putLocalAndCloudFragments(localFragment, cloudFragment)
+                RepositoryFragment.initLocalAndCloudFragments(localFragment, cloudFragment)
             }
         }
         val fragmentAdapter = RepositoryPagerAdapter(this.supportFragmentManager, fragments, titles)

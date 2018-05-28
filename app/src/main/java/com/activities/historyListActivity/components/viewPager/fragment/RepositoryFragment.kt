@@ -7,15 +7,17 @@ import android.support.v4.widget.NestedScrollView
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.LinearSnapHelper
 import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.SnapHelper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.LayoutAnimationController
 import com.activities.historyListActivity.components.viewPager.recyclerView.historyListRecyclerViewAdapter.HistoryRecyclerViewAdapter
 import com.annotations.FuckingStaticSingleton
 import com.example.starkre.sleepAlertHistory.R
 import java.util.logging.Logger
+
+/**
+ * Класс RepositoryFragment - это обертка над списком историй RecyclerView в ViewPager.
+ */
 
 @FuckingStaticSingleton
 class RepositoryFragment : Fragment() {
@@ -24,11 +26,18 @@ class RepositoryFragment : Fragment() {
         @JvmStatic
         var log = Logger.getLogger(RepositoryFragment::class.java.name)
 
-        @SuppressLint("StaticFieldLeak")
-        var LOCAL: RepositoryFragment? = null
+
+        /**
+         * Созадется 2 ViewPagers: одно окно для локального хранилища, другое - для облачного.
+         * Так как вкладки переключаются, и чтобы не проверять с какой историей происходит работа,
+         * то созданы "текущий" и "запасной" RepositoryFragments, которые будут переключаться.
+         */
 
         @SuppressLint("StaticFieldLeak")
-        var CLOUD: RepositoryFragment? = null
+        private var LOCAL: RepositoryFragment? = null
+
+        @SuppressLint("StaticFieldLeak")
+        private var CLOUD: RepositoryFragment? = null
 
         @SuppressLint("StaticFieldLeak")
         var CURRENT: RepositoryFragment? = null
@@ -36,13 +45,23 @@ class RepositoryFragment : Fragment() {
         @SuppressLint("StaticFieldLeak")
         var OPPOSITE: RepositoryFragment? = null
 
-        fun putLocalAndCloudFragments(localFragment: RepositoryFragment
-                                      , cloudFragment: RepositoryFragment) {
+        /**
+         * initLocalAndCloudFragments(localFragment: RepositoryFragment
+         * , cloudFragment: RepositoryFragment) устанавливает "текущий" и "запасной"
+         * RepositoryFragments. Первым всегда устанавливается локальный репозиторий.
+         */
+
+        fun initLocalAndCloudFragments(localFragment: RepositoryFragment
+                                       , cloudFragment: RepositoryFragment) {
             LOCAL = localFragment
             CLOUD = cloudFragment
             CURRENT = localFragment
             OPPOSITE = cloudFragment
         }
+
+        /**
+         * swapLocalAndCloud() меняет местами "текущий" и "запасной" репозитории.
+         */
 
         fun swapLocalAndCloud() {
             if (CURRENT === LOCAL) {
@@ -55,9 +74,15 @@ class RepositoryFragment : Fragment() {
         }
     }
 
-    var nestedScrollView: NestedScrollView? = null
+    /**
+     * 1.) nestedScrollView - ViewPager основан на странице, которая "скроллится";
+     * 2.) recyclerView - список историй;
+     * 3.) recyclerViewAdapter - адаптер, отслеживающий действия со списком историй.
+     */
 
-    var recyclerView: RecyclerView? = null
+    private var nestedScrollView: NestedScrollView? = null
+
+    private var recyclerView: RecyclerView? = null
 
     var recyclerViewAdapter: HistoryRecyclerViewAdapter? = null
 
@@ -69,9 +94,17 @@ class RepositoryFragment : Fragment() {
         return this.nestedScrollView
     }
 
+    /**
+     * init() инициализирует ViewPager.
+     */
+
     private fun init() {
         this.initRecyclerView()
     }
+
+    /**
+     * initRecyclerView() инициализирует список историй.
+     */
 
     private fun initRecyclerView() {
         val recyclerViewAdapter = HistoryRecyclerViewAdapter()
@@ -86,7 +119,12 @@ class RepositoryFragment : Fragment() {
         snapHelper.attachToRecyclerView(this.recyclerView)
     }
 
-    fun refresh() {
+    /**
+     * refresh() обновляет ViewPager.
+     */
 
+    //Пока пусто, пока обновлять ничего не нужно...
+    fun refresh() {
+        //Пока пусто...
     }
 }

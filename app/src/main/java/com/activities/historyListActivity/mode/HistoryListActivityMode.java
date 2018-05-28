@@ -6,7 +6,8 @@ package com.activities.historyListActivity.mode;
  * Крохотный enum для режимов работы с историями.
  * 1.) BROWSING - просмотр историй;
  * 2.) SELECTING - выбор историй;
- * 3.) RENAMING - переименовывание истории.
+ * 3.) RENAMING - переименовывание истории;
+ * 4.) SHOW_OPTIONS - общие действия с историями.
  */
 
 public enum HistoryListActivityMode {

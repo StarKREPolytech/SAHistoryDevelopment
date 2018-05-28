@@ -23,23 +23,26 @@ class HistoryViewHolder(itemView: View, private val parentAdapter: HistoryRecycl
 
     /**
      * 1.) parentAdapter - адаптер, который управляет объектами этого класса;
-     * 2.) textViewHeadline - заголовок истории;
-     * 3.) textViewDescription - описание истории;
+     * 2.) headlineTextView - заголовок истории;
+     * 3.) descriptionTextView - описание истории;
      * 4.) historyRepositoryImageView - кнопка "Редактировать";
-     * 5.) imageViewTick - картинка "Галочка";
-     * 6.) imageViewTickOff - картинка "Пустая клетка";
-     * 7.) currentPosition - позиция в списке историй.
+     * 5.) tickImageView - картинка "Галочка";
+     * 6.) tickOffImageView - картинка "Пустая клетка";
+     * 7.) historyHeadlineTextEditor - строка переименовывания;
+     * 8.) labelImageView - логотип истории;
+     * 9.) cardRelativeLayout - вся область истории;
+     * 10.) currentPosition - позиция в списке историй.
      */
 
-    var textViewHeadline: TextView? = null
+    var headlineTextView: TextView? = null
 
-    var textViewDescription: TextView? = null
+    var descriptionTextView: TextView? = null
 
     var historyRepositoryImageView: ImageView? = null
 
-    var imageViewTick: ImageView? = null
+    var tickImageView: ImageView? = null
 
-    var imageViewTickOff: ImageView? = null
+    var tickOffImageView: ImageView? = null
 
     var historyHeadlineTextEditor: EditText? = null
 
@@ -47,17 +50,17 @@ class HistoryViewHolder(itemView: View, private val parentAdapter: HistoryRecycl
 
     internal var currentPosition: Int = 0
 
-    private var relativeLayout: RelativeLayout? = null
+    private var cardRelativeLayout: RelativeLayout? = null
 
     init {
         //Установка элементов:
-        this.relativeLayout = itemView.findViewById(R.id.history_card_relative_layout)
-        this.textViewHeadline = itemView.findViewById(R.id.history_card_headline)
-        this.textViewDescription = itemView.findViewById(R.id.history_card_description)
+        this.cardRelativeLayout = itemView.findViewById(R.id.history_card_relative_layout)
+        this.headlineTextView = itemView.findViewById(R.id.history_card_headline)
+        this.descriptionTextView = itemView.findViewById(R.id.history_card_description)
         this.historyRepositoryImageView = itemView
                 .findViewById(R.id.history_card_repository_image_view)
-        this.imageViewTick = itemView.findViewById(R.id.history_card_tick_image_view)
-        this.imageViewTickOff = itemView.findViewById(R.id.history_card_cell_image_view)
+        this.tickImageView = itemView.findViewById(R.id.history_card_tick_image_view)
+        this.tickOffImageView = itemView.findViewById(R.id.history_card_cell_image_view)
         this.historyHeadlineTextEditor = itemView.findViewById(R.id.history_card_headline_edit_text)
         this.labelImageView = itemView.findViewById(R.id.history_card_label_image_view)
         //Установка обработчиков событий:
@@ -70,11 +73,11 @@ class HistoryViewHolder(itemView: View, private val parentAdapter: HistoryRecycl
      */
 
     private fun installEventHandlers() {
-        this.relativeLayout?.setOnClickListener({
-            this.parentAdapter.handleOnHistoryClick(this.imageViewTick!!, this.currentPosition)
+        this.cardRelativeLayout?.setOnClickListener({
+            this.parentAdapter.handleOnHistoryClick(this.tickImageView!!, this.currentPosition)
             HistoryListActivity.THIS!!.refresh()
         })
-        this.relativeLayout?.setOnLongClickListener({
+        this.cardRelativeLayout?.setOnLongClickListener({
             HistoryListActivity.THIS!!.showOptionsView()
             HistoryListActivity.THIS!!.refresh()
             true

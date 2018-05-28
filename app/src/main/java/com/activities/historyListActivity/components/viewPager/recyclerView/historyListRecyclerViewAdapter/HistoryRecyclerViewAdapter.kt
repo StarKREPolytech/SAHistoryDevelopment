@@ -38,31 +38,20 @@ import java.util.logging.Logger
 
 class HistoryRecyclerViewAdapter : RecyclerView.Adapter<HistoryViewHolder>() {
 
-
     companion object {
         private val log = Logger.getLogger(HistoryRecyclerViewAdapter::class.java.name)
     }
 
     /**
-     * 1.) THIS - провайдер менеджеров историй;
-     *
-     *
-     * 2.) parentActivity - окно историй;
-     *
-     *
-     * 3.) adapterMode - режим работы адаптера со списоком
-     * в RecyclerView;
-     *
-     *
-     * 4.) historyViewHolderList - список графических
+     * 1.) historyViewHolderList - список графических
      * объектов-привязок к историям (холдеров);
      *
      *
-     * 5.) historyManagerHolderMap - карта, которая
+     * 2.) historyManagerHolderMap - карта, которая
      * хранит в себе ключ -> значение: холдер -> история;
      *
      *
-     * 6.) HistoryActionConfigurator - настройщик адаптера,
+     * 3.) HistoryActionConfigurator - настройщик адаптера,
      * позволяет динамически устанавливать, какие действия
      * и с какими историями должен работать адаптер.
      */
@@ -107,8 +96,8 @@ class HistoryRecyclerViewAdapter : RecyclerView.Adapter<HistoryViewHolder>() {
         val currentHistoryManager = HistoryManagerProvider.THIS!!.current
         val history = currentHistoryManager!!.getHistory(position)
         //Установили параметры из истории:
-        holder.textViewHeadline?.text = history.headline
-        holder.textViewDescription?.text = history.pullDescription()
+        holder.headlineTextView?.text = history.headline
+        holder.descriptionTextView?.text = history.pullDescription()
         //Затем обязательно привязываем к historyHolder позицию:
         holder.currentPosition = position
         //Связываем историю и холдер через map:
@@ -131,7 +120,7 @@ class HistoryRecyclerViewAdapter : RecyclerView.Adapter<HistoryViewHolder>() {
             HistoryListActivityMode.BROWSING -> HistoryViewUtils.showLabelAndHideTick(holder)
             HistoryListActivityMode.SELECTING -> HistoryViewUtils.hideHistoryLabelAndShowCell(holder)
             HistoryListActivityMode.RENAMING -> HistoryViewUtils.showLabelAndHideTick(holder)
-            else -> {
+            else -> { //Пока ничего...
             }
         }
     }
@@ -146,7 +135,7 @@ class HistoryRecyclerViewAdapter : RecyclerView.Adapter<HistoryViewHolder>() {
 
     private fun setHistoryTickVisibility(history: History, holder: HistoryViewHolder) {
         val historyManager = HistoryManagerProvider.THIS!!.current
-        val imageViewTick = holder.imageViewTick
+        val imageViewTick = holder.tickImageView
         val isSelectedHistory = historyManager!!.isSelectedHistory(history)
         val visibility = if (isSelectedHistory) View.VISIBLE else View.INVISIBLE
         imageViewTick?.visibility = visibility
@@ -162,7 +151,7 @@ class HistoryRecyclerViewAdapter : RecyclerView.Adapter<HistoryViewHolder>() {
 
     private fun setHistoryTextEditor(history: History, holder: HistoryViewHolder) {
         val editText = holder.historyHeadlineTextEditor
-        val headlineText = holder.textViewHeadline
+        val headlineText = holder.headlineTextView
         if (HistoryListActivity.THIS?.activityMode == HistoryListActivityMode.RENAMING) {
             val historyManager = HistoryManagerProvider.THIS!!.current
             val hasOneSelectedHistory = historyManager!!.hasOneSelectedHistory()
@@ -198,6 +187,11 @@ class HistoryRecyclerViewAdapter : RecyclerView.Adapter<HistoryViewHolder>() {
         this.startRemovedHistoriesClearingCountdown()
     }
 
+    /**
+     * startRemovedHistoriesClearingCountdown() запускает таймер, по окончании которого,
+     * кнопка "Отменить удаление" скроется.
+     */
+
     private fun startRemovedHistoriesClearingCountdown() {
         val millis: Long = 3000
         Handler().postDelayed({
@@ -216,7 +210,7 @@ class HistoryRecyclerViewAdapter : RecyclerView.Adapter<HistoryViewHolder>() {
         HistoryListActivity.THIS?.activityMode = HistoryListActivityMode.RENAMING
         val history = HistoryManagerProvider.THIS!!.current!!.selectedHistory
         val holder = this.historyVsHolderMap[history]
-        holder?.textViewHeadline?.visibility = View.INVISIBLE
+        holder?.headlineTextView?.visibility = View.INVISIBLE
         holder?.historyHeadlineTextEditor?.visibility = View.VISIBLE
         HistoryViewUtils.showAllLabelsAndHideAllTicks(this.historyViewHolderList)
     }
@@ -275,7 +269,7 @@ class HistoryRecyclerViewAdapter : RecyclerView.Adapter<HistoryViewHolder>() {
                 val history = historyManager!!.selectedHistory
                 this.setNewHeadlineInHistory(history!!.headline)
             }
-            else -> {
+            else -> { //Ничего...
             }
         }
     }
@@ -360,14 +354,12 @@ class HistoryRecyclerViewAdapter : RecyclerView.Adapter<HistoryViewHolder>() {
             val message = isValidVsMsg.second
             if (isValidNewName) {
                 //Можно переименовывать:
-                log.info("SUCCESS OF RENAMING!!!")
                 Toasty.success(HistoryListActivity.THIS!!, message).show()
                 this.setNewHeadlineInHistory(newText)
             } else {
                 Toasty.error(HistoryListActivity.THIS!!, message).show()
             }
         }
-        log.info("ENTER CLICKED!")
     }
 
     /**
@@ -412,7 +404,7 @@ class HistoryRecyclerViewAdapter : RecyclerView.Adapter<HistoryViewHolder>() {
         val holder = this.historyVsHolderMap[selectedHistory]
         //Меняем значения в истории:
         HistoryManagerProvider.THIS!!.setHeadlineForSelectedHistory(newText!!)
-        val headline = holder?.textViewHeadline
+        val headline = holder?.headlineTextView
         headline?.text = newText
         headline?.visibility = View.VISIBLE
         holder?.historyHeadlineTextEditor?.visibility = View.INVISIBLE
@@ -421,9 +413,8 @@ class HistoryRecyclerViewAdapter : RecyclerView.Adapter<HistoryViewHolder>() {
         //Прячем все кнопки "Редактировать":
         HistoryViewUtils.hideAllHistoryLabelsAndShowAllCells(this.historyViewHolderList)
         //Над переименованной кнопкой ставим галочку:
-        holder?.imageViewTick?.visibility = View.VISIBLE
+        holder?.tickImageView?.visibility = View.VISIBLE
         //Переходим в режим выбора:
-        log.info("Переименовано!!!")
         HistoryListActivity.THIS?.activityMode = HistoryListActivityMode.SELECTING
     }
 
@@ -457,7 +448,7 @@ class HistoryRecyclerViewAdapter : RecyclerView.Adapter<HistoryViewHolder>() {
     }
 
     /**
-     * synchronize() отображает синхронизацию
+     * notifySynchronizedData(isSynchronized: Boolean) отображает синхронизацию
      * в RecyclerView, если произошла синхронизация.
      *
      * @param isSynchronized указать произошла ли
@@ -474,6 +465,10 @@ class HistoryRecyclerViewAdapter : RecyclerView.Adapter<HistoryViewHolder>() {
             this.showSyncToast(HistoryViewUtils.convertToPluralWord(from), HistoryViewUtils.convertToPluralWord(to))
         }
     }
+
+    /**
+     * synchronizeSelected() синхронизирует выбранные истории.
+     */
 
     fun synchronizeSelected() {
         HistoryManagerProvider.THIS?.synchronizeSelected()
@@ -502,11 +497,20 @@ class HistoryRecyclerViewAdapter : RecyclerView.Adapter<HistoryViewHolder>() {
         Toasty.success(HistoryListActivity.THIS!!, message, Toast.LENGTH_LONG).show()
     }
 
+    /**
+     * sortHistoryListByAlphabet() сортирует истории по алфавиту.
+     */
+
     fun sortHistoryListByAlphabet() {
         HistoryManagerProvider.THIS!!.sortByAlphabet()
         this.notifyDataSetChanged()
     }
 
+    /**
+     * sortHistoryListByDate() сортирует истлории по дате (чуть-чуть не доработал)
+     */
+
+    //FIXME: Нужно сортировать не по descriptionTextView, а по date!!!
     fun sortHistoryListByDate() {
         HistoryManagerProvider.THIS!!.sortByDate()
         this.notifyDataSetChanged()
@@ -516,7 +520,6 @@ class HistoryRecyclerViewAdapter : RecyclerView.Adapter<HistoryViewHolder>() {
      * makeAction() неявно выполняет действие над историями,
      * которое было установлено в соответствии с конфигуациями для адаптера.
      */
-
 
     fun makeAction() {
         //Совершили действие:
@@ -607,14 +610,16 @@ class HistoryRecyclerViewAdapter : RecyclerView.Adapter<HistoryViewHolder>() {
 
         init {
             //Настраиваем действия по типу:
-            this.actionEnumMap = object : EnumMap<ActionType, HistoryAction>(ActionType::class.java) {
+            this.actionEnumMap = object : EnumMap<ActionType, HistoryAction>(ActionType::class
+                    .java) {
                 init {
                     this[ActionType.REMOVE] = HistoryAction { removeSelectedHistories() }
                     this[ActionType.NONE] = HistoryAction { }
                 }
             }
             //Настраиваем критерий-выбор по типу:
-            this.filterEnumMap = object : EnumMap<FilterType, HistoryFilter>(FilterType::class.java) {
+            this.filterEnumMap = object : EnumMap<FilterType, HistoryFilter>(FilterType::class
+                    .java) {
                 init {
                     this[FilterType.SYNCHRONIZED] = HistoryFilter {
                         HistoryManagerProvider.THIS?.synchronizedMode = it

@@ -37,8 +37,8 @@ public final class HistoryViewUtils {
 
     public static void showLabelAndHideTick(final HistoryViewHolder holder){
         holder.getLabelImageView().setVisibility(View.VISIBLE);
-        holder.getImageViewTick().setVisibility(View.INVISIBLE);
-        holder.getImageViewTickOff().setVisibility(View.INVISIBLE);
+        holder.getTickImageView().setVisibility(View.INVISIBLE);
+        holder.getTickOffImageView().setVisibility(View.INVISIBLE);
     }
 
     public static void hideAllHistoryLabelsAndShowAllCells(
@@ -50,7 +50,7 @@ public final class HistoryViewUtils {
 
     public static void hideHistoryLabelAndShowCell(final HistoryViewHolder holder){
         holder.getLabelImageView().setVisibility(View.INVISIBLE);
-        holder.getImageViewTickOff().setVisibility(View.VISIBLE);
+        holder.getTickOffImageView().setVisibility(View.VISIBLE);
     }
 
     public static void hideAllEditButtonsAndSelectAllTicks(
@@ -62,14 +62,14 @@ public final class HistoryViewUtils {
 
     public static void hideEditButtonAndSelectTick(final HistoryViewHolder holder) {
         hideHistoryLabelAndShowCell(holder);
-        holder.getImageViewTick().setVisibility(View.VISIBLE);
+        holder.getTickImageView().setVisibility(View.VISIBLE);
     }
 
     public static void hideAllEditButtonsAndShowAllEmptyTicks(
             final List<HistoryViewHolder> historyViewHolderList) {
         for (final HistoryViewHolder holder : historyViewHolderList){
             hideHistoryLabelAndShowCell(holder);
-            holder.getImageViewTick().setVisibility(View.INVISIBLE);
+            holder.getTickImageView().setVisibility(View.INVISIBLE);
         }
     }
 

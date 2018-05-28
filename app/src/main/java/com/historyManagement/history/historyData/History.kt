@@ -10,8 +10,8 @@ package com.historyManagement.history.historyData
 class History {
 
     /**
-     * 1.) headline - заголовок истории;
-     * 2.) description - описание истории;
+     * 1.) headlineTextView - заголовок истории;
+     * 2.) descriptionTextView - описание истории;
      * 3.) dataAnalyser - аналирирует и
      * хранит данные, которые пришли с устройства.
      */
