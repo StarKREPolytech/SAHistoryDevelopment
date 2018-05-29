@@ -5,12 +5,13 @@ import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
+/**
+ * Класс ConvenientTime позволяет работать как с днями, так и с часами.
+ */
+
 class ConvenientTime(milliTime: Long) {
 
     val date: Date = Date(milliTime)
-
-    @SuppressLint("SimpleDateFormat")
-    private val dateFormat: DateFormat = SimpleDateFormat("dd.MM.yyyy")
 
     @SuppressLint("SimpleDateFormat")
     private val timeFormat: DateFormat = SimpleDateFormat("HH:mm")
@@ -29,7 +30,8 @@ class ConvenientTime(milliTime: Long) {
      * @return дату.
      */
 
-    fun convertToDateString(): String = this.dateFormat.format(this.date)
+    @SuppressLint("SimpleDateFormat")
+    fun convertToDateString(): String = SimpleDateFormat("dd.MM.yyyy").format(this.date)
 
     /**
      * convertToTimeString() собирает информацию о часах.
@@ -37,5 +39,6 @@ class ConvenientTime(milliTime: Long) {
      * @return время.
      */
 
-    private fun convertToTimeString(): String = this.timeFormat.format(this.date)
+    @SuppressLint("SimpleDateFormat")
+    private fun convertToTimeString(): String = SimpleDateFormat("HH:mm").format(this.date)
 }

@@ -3,7 +3,7 @@ package com.activities.historyListActivity.mode;
 /**
  * @author Игорь Гулькин 27.04.2018
  *
- * Крохотный enum для режимов работы с историями.
+ * Крохотный enum, определяющий в каком режиме работает HistoryListActivity с историями.
  * 1.) BROWSING - просмотр историй;
  * 2.) SELECTING - выбор историй;
  * 3.) RENAMING - переименовывание истории;

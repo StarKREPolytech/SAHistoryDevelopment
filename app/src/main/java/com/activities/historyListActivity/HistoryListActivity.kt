@@ -29,6 +29,13 @@ import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx
 import java.util.ArrayList
 import java.util.logging.Logger
 
+/**
+ * Класс HistoryListActivity полностью описывает окно просмотра списка историй.
+ * Он включает в себя общий бар Activities, имеет бар работы с историями,
+ * бар работы с выбранными историями, всплывающая кнопка "Отмена", клавиатурный помощник,
+ * вкладки и списки историй с локальным и облачным репозиториями.
+ */
+
 @FuckingStaticSingleton
 class HistoryListActivity : AppCompatActivity() {
 
@@ -48,9 +55,23 @@ class HistoryListActivity : AppCompatActivity() {
         private val START_ACTIVITY_MODE = HistoryListActivityMode.BROWSING
     }
 
+    /**
+     * 1.) activityMode - режим работы activity;
+     * 2.) repositoryTabLayout - вкладки: "Локальное" и "Облачное" хранилище;
+     * 3.) viewPager - обертка для списка историй;
+     * 4.) bottomNavigationBar - общий бар всех activity;
+     * 5.) optionBar - бар работы со всеми историями;
+     * 6.) editBar - бар работы с выбранными историями;
+     * 7.) popupCancelButton - всплывающая кнопка "Отмена";
+     * 8.) keyBoardSupplier - клавиатурный  помощник,
+     * который умеет показывать и прятать клавиатуру.
+     * 9.) descriptionTextView - текст, который объясняет пользователю,
+     * что это за окно, если историй нет.
+     */
+
     var activityMode: HistoryListActivityMode? = START_ACTIVITY_MODE
 
-    private var tabLayout: TabLayout? = null
+    private var repositoryTabLayout: TabLayout? = null
 
     var viewPager: ViewPager? = null
 
@@ -60,9 +81,9 @@ class HistoryListActivity : AppCompatActivity() {
 
     internal val editBar = EditBar()
 
-    internal val keyBoardSupplier = KeyBoardSupplier()
-
     internal val popupCancelButton = PopupCancelButton()
+
+    internal val keyBoardSupplier = KeyBoardSupplier()
 
     private var descriptionTextView: View? = null
 
@@ -74,6 +95,10 @@ class HistoryListActivity : AppCompatActivity() {
         this.refresh()
     }
 
+    /**
+     * init() инициализует все части activity.
+     */
+
     private fun init() {
         this.initToolbar()
         this.initViewPager()
@@ -84,10 +109,19 @@ class HistoryListActivity : AppCompatActivity() {
         this.descriptionTextView = this.findViewById(R.id.history_list_activity_text_description)
     }
 
+    /**
+     * initToolbar() инициализирует верхний бар.
+     */
+
     private fun initToolbar() {
         val toolbar = findViewById<Toolbar>(R.id.toolbar_main)
         this.setSupportActionBar(toolbar)
     }
+
+    /**
+     * Вложенный класс BottomNavigationBar
+     * оборачивает бар с переходами на разные activity приложения.
+     */
 
     inner class BottomNavigationBar {
 
@@ -97,13 +131,31 @@ class HistoryListActivity : AppCompatActivity() {
             this.bottomNavigationBar = findViewById(R.id.bottom_navigation_bar)
         }
 
+        /**
+         * setBottomNavigationViewVisibility() показывает бар,
+         * если установлен режим работы "Просматривать истории".
+         * Методы вызывается только тогда, когда происходит вызов метода refresh()
+         */
+
         internal fun setBottomNavigationViewVisibility() {
             val isVisible = activityMode == HistoryListActivityMode.BROWSING
             HistoryViewUtils.setVisibility(isVisible, this.bottomNavigationBar)
         }
     }
 
+    /**
+     * Вложенный класс OptionBar
+     * оборачивает бар для работы со всеми историями.
+     */
+
     inner class OptionBar {
+
+        /**
+         * 1.) historyOptionRelativeLayout - общий бар;
+         * 2.) historySelectingModeImageView - "кнопка-картинка" работы с выбранными историями;
+         * 3.) historySyncAllHistoriesImageView "кнопка-картинка" "Синхронизировать все истории";
+         * 4.) historySortHistoriesImageView "кнопка-картинка" "Сортировать все истории"
+         */
 
         private var historyOptionRelativeLayout: RelativeLayout? = null
 
@@ -113,7 +165,15 @@ class HistoryListActivity : AppCompatActivity() {
 
         var historySortHistoriesImageView: ImageView? = null
 
+        /**
+         * sortType ууказывает тип сортировки.
+         */
+
         var sortType = SortType.ALPHABET
+
+        /**
+         * init() инициазирует бар.
+         */
 
         internal fun init() {
             this.historyOptionRelativeLayout = findViewById(R.id.history_option_bar)
@@ -125,9 +185,19 @@ class HistoryListActivity : AppCompatActivity() {
                     .history_sync_all_histories_image_view)
         }
 
+        /**
+         * refresh() обновляет все элементы бара.
+         * Локальный refresh() вызывается только в общем refresh() методе.
+         */
+
         internal fun refresh() {
             this.setOptionViewVisibility()
         }
+
+        /**
+         * setOptionViewVisibility() показывает бар, если режим работы установлен в режим
+         * работы с всеми историями.
+         */
 
         private fun setOptionViewVisibility() {
             val isVisible = activityMode == HistoryListActivityMode.SHOW_OPTIONS
@@ -135,9 +205,20 @@ class HistoryListActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Крохотный enum SortType указывает тип сортировки.
+     */
+
     enum class SortType {
         ALPHABET, DATE
     }
+
+    /**
+     * selectionModeImageViewOnClick(unused: View)
+     * обрабатывает нажатие на кнопку "Редактировать выбранные истории".
+     *
+     * @param unused не используется.
+     */
 
     @XMLProvided(layout = "history_option_view.xml")
     fun selectionModeImageViewOnClick(unused: View) {
@@ -146,11 +227,26 @@ class HistoryListActivity : AppCompatActivity() {
         this.refresh()
     }
 
+
+    /**
+     * syncAllImageViewOnClick(unused: View)
+     * обрабатывает нажатие на кнопку "Синхронизировать все истории".
+     *
+     * @param unused не используется.
+     */
+
     @XMLProvided(layout = "history_option_view.xml")
     fun syncAllImageViewOnClick(unused: View) {
         RepositoryFragment.CURRENT?.recyclerViewAdapter?.synchronizeAll()
         this.refresh()
     }
+
+    /**
+     * sortImageViewOnClick(unused: View)
+     * обрабатывает нажатие на кнопку "Сортировать все истории".
+     *
+     * @param unused не используется.
+     */
 
     @XMLProvided(layout = "history_option_view.xml")
     fun sortImageViewOnClick(unused: View) {
@@ -171,7 +267,13 @@ class HistoryListActivity : AppCompatActivity() {
         this.refresh()
     }
 
-    fun showOptionsView() {
+    /**
+     * setEditMode() меняет режим работы activity с режима работы со всеми историями
+     * в режим работы просмотра, если был другой режим,
+     * то - в режим работы со всеми историями.
+     */
+
+    fun setEditMode() {
         if (this.activityMode == HistoryListActivityMode.SHOW_OPTIONS) {
             this.activityMode = HistoryListActivityMode.BROWSING
         } else {
@@ -180,7 +282,21 @@ class HistoryListActivity : AppCompatActivity() {
         this.refresh()
     }
 
+    /**
+     * Вложенный класс EditBar
+     * оборачивает бар для работы со выбранными историями.
+     */
+
     inner class EditBar {
+
+        /**
+         * 1.) historyEditRelativeLayout - бар;
+         * 2.) historyDeleteImageView - "кнопка-картинка" "Удалить выбранные истории";
+         * 3.) historySyncImageView - "кнопка-картинка" "Синхронизировать выбранные истории";
+         * 4.) historyRenameImageView - "кнопка-картинка" "Переименовать историю";
+         * 5.) selectAllHistoriesTextView - "кнопка-картинка"
+         * "Выбрать все истории" / "Отменить выделение";
+         */
 
         private var historyEditRelativeLayout: RelativeLayout? = null
 
@@ -192,6 +308,10 @@ class HistoryListActivity : AppCompatActivity() {
 
         internal var selectAllHistoriesTextView: TextView? = null
 
+        /**
+         * init() инициализирует бар.
+         */
+
         internal fun init() {
             this.historyEditRelativeLayout = findViewById(R.id.history_edit_bar)
             this.historyDeleteImageView = findViewById(R.id.history_delete_history_image_view)
@@ -200,6 +320,11 @@ class HistoryListActivity : AppCompatActivity() {
             this.selectAllHistoriesTextView = findViewById(R.id
                     .history_select_all_histories_text_view)
         }
+
+        /**
+         * refresh() обновляет все элементы бара.
+         * Локальный refresh() вызывается только в общем refresh() методе.
+         */
 
         internal fun refresh() {
             this.setEditViewVisibility()
@@ -210,10 +335,21 @@ class HistoryListActivity : AppCompatActivity() {
             this.setSelectAllTextViewVisibility()
         }
 
+
+        /**
+         * setEditViewVisibility() показывает бар,
+         * если режим работы - работать с выбранными историями.
+         */
+
         private fun setEditViewVisibility() {
             val isVisible = activityMode == HistoryListActivityMode.SELECTING
             HistoryViewUtils.setVisibility(isVisible, this.historyEditRelativeLayout)
         }
+
+        /**
+         * setSyncImageViewVisibility() показывает кнопку "Синхронизовать",
+         * если среди выбранных историй есть несинхрониированные или нет выбранных историй.
+         */
 
         private fun setSyncImageViewVisibility() {
             val historyManagerProvider = HistoryManagerProvider.THIS
@@ -228,36 +364,60 @@ class HistoryListActivity : AppCompatActivity() {
             HistoryViewUtils.setVisibility(false, this.historySyncImageView)
         }
 
+        /**
+         * setDeleteImageViewVisibility() показыват кнопку "Удалить", если есть выбранные истории.
+         */
+
         private fun setDeleteImageViewVisibility() {
             val isVisible = !HistoryManagerProvider.THIS?.current?.hasNotSelectedHistories()!!
             HistoryViewUtils.setVisibility(isVisible, this.historyDeleteImageView)
         }
+
+        /**
+         * setRenameImageViewVisibility() показывает кнопку "Переименовать историю",
+         * если выбрана ровно одна история.
+         */
 
         private fun setRenameImageViewVisibility() {
             val isVisible = HistoryManagerProvider.THIS?.current?.hasOneSelectedHistory()!!
             HistoryViewUtils.setVisibility(isVisible, this.historyRenameImageView)
         }
 
-        private fun setSelectAllTextViewVisibility(){
+        /**
+         * setSelectAllTextViewVisibility() показывает кнопку выбора / снятия выбора историй,
+         * если есть хотя бы одна история в списке.
+         */
+
+        private fun setSelectAllTextViewVisibility() {
             val isVisible = HistoryManagerProvider.THIS?.current?.hasHistories()!!
             HistoryViewUtils.setVisibility(isVisible, this.selectAllHistoriesTextView)
         }
+
+        /**
+         * setSelectAllHistoriesText() устанавливает техт кнопки выбора историй.
+         * Если выбраны все истории, то текст кнопки равен "Отменить выделение".
+         * Если нет выбранных историй, -> "Выбрать все".
+         */
 
         fun setSelectAllHistoriesText() {
             val historyManager = HistoryManagerProvider.THIS?.current
             log.info("COUNT SELECTED: " + historyManager?.selectedHistories?.size)
             log.info("COUNT SUMMARY: " + historyManager?.selectedHistories?.size)
             if (historyManager!!.isSelectedAllHistories()) {
-                log.info("ALL SELECTED!!!")
                 this.selectAllHistoriesTextView?.setText(R.string.history_deselect_all)
             }
             if (historyManager.hasNotSelectedHistories()) {
-                log.info("ALL DESELECTED!!!")
                 this.selectAllHistoriesTextView?.setText(R.string.history_select_all)
             }
         }
-
     }
+
+    /**
+     * deleteImageViewOnClick(unused: View)
+     * обрабатывает нажатие на кнопку "Удалить выбранные истории".
+     *
+     * @param unused не используется.
+     */
 
     @XMLProvided(layout = "history_edit_view.xml")
     fun deleteImageViewOnClick(unused: View) {
@@ -266,11 +426,25 @@ class HistoryListActivity : AppCompatActivity() {
         this.refresh()
     }
 
+    /**
+     * syncImageViewOnClick(unused: View)
+     * обрабатывает нажатие на кнопку "Синхронизировать выбранные истории".
+     *
+     * @param unused не используется.
+     */
+
     @XMLProvided(layout = "history_edit_view.xml")
     fun syncImageViewOnClick(unused: View) {
         RepositoryFragment.CURRENT?.recyclerViewAdapter?.synchronizeSelected()
         this.refresh()
     }
+
+    /**
+     * renameImageViewOnClick(unused: View)
+     * обрабатывает нажатие на кнопку "Переименовать выбранную историю".
+     *
+     * @param unused не используется.
+     */
 
     @XMLProvided(layout = "history_edit_view.xml")
     fun renameImageViewOnClick(unused: View) {
@@ -278,6 +452,13 @@ class HistoryListActivity : AppCompatActivity() {
         this.keyBoardSupplier.showKeyBoard()
         this.refresh()
     }
+
+    /**
+     * selectAllHistories(unused: View)
+     * обрабатывает нажатие на кнопку "Выбрать все истории" / "Отменить выбор всех историй".
+     *
+     * @param unused не используется.
+     */
 
     @XMLProvided(layout = "history_edit_view.xml")
     fun selectAllHistories(unused: View) {
@@ -295,13 +476,25 @@ class HistoryListActivity : AppCompatActivity() {
         this.refresh()
     }
 
+    /**
+     * Вложенный класс PopupCancelButton
+     * оборачивает всплывающую кнопку отмены.
+     */
+
     inner class PopupCancelButton {
+
+        /**
+         * 1.) popupCancelButtonRelativeLayout - сама кнопка;
+         * 2.) popupCancelButtonTextView - текст кнопки;
+         */
 
         var popupCancelButtonRelativeLayout: RelativeLayout? = null
 
         var popupCancelButtonTextView: TextView? = null
 
-        var notPressedCancelButton = true
+        /**
+         * Init() инициализирует всплывающую кнопку.
+         */
 
         internal fun init() {
             this.popupCancelButtonRelativeLayout = findViewById(R.id
@@ -310,6 +503,13 @@ class HistoryListActivity : AppCompatActivity() {
                     .history_popup_cancel_button_text_view)
         }
 
+        /**
+         * showPopupCancelButton(cancelActionType: CancelActionType)
+         * показывает кнопку на экране.
+         *
+         * @param cancelActionType какое действие отменить.
+         */
+
         @SuppressLint("PrivateResource")
         fun showPopupCancelButton(cancelActionType: CancelActionType) {
             this.popupCancelButtonRelativeLayout?.visibility = View.VISIBLE
@@ -317,7 +517,6 @@ class HistoryListActivity : AppCompatActivity() {
                 CancelActionType.CANCEL_REMOVE -> {
                     this.popupCancelButtonTextView?.text = "Отменить удаление"
                     this.popupCancelButtonRelativeLayout?.setOnClickListener({
-                        popupCancelButton.notPressedCancelButton = false
                         HistoryManagerProvider.THIS?.restoreRemovedHistories()
                         RepositoryFragment.CURRENT?.recyclerViewAdapter?.notifyDataSetChanged()
                         hidePopupCancelButton()
@@ -329,6 +528,11 @@ class HistoryListActivity : AppCompatActivity() {
                     , R.anim.abc_fade_in))
         }
 
+        /**
+         * hidePopupCancelButton()
+         * прячет кнопку с экрана.
+         */
+
         @SuppressLint("PrivateResource")
         fun hidePopupCancelButton() {
             if (this.popupCancelButtonRelativeLayout?.visibility == View.VISIBLE) {
@@ -339,12 +543,20 @@ class HistoryListActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * CancelActionType указывает тип отмены действия.
+     */
+
     enum class CancelActionType {
         CANCEL_REMOVE
     }
 
+    /**
+     * initViewPager() инициализирует список историй, обернутый в ViewPager.
+     */
+
     private fun initViewPager() {
-        this.tabLayout = this.findViewById(R.id.tab_layout_main)
+        this.repositoryTabLayout = this.findViewById(R.id.tab_layout_main)
         this.viewPager = this.findViewById(R.id.view_pager_main)
         val titles = object : ArrayList<String>() {
             init {
@@ -352,8 +564,8 @@ class HistoryListActivity : AppCompatActivity() {
                 this.add(getString(R.string.cloud_repository_tab_title))
             }
         }
-        this.tabLayout?.addTab(this.tabLayout!!.newTab().setText(titles[0]))
-        this.tabLayout?.addTab(this.tabLayout!!.newTab().setText(titles[1]))
+        this.repositoryTabLayout?.addTab(this.repositoryTabLayout!!.newTab().setText(titles[0]))
+        this.repositoryTabLayout?.addTab(this.repositoryTabLayout!!.newTab().setText(titles[1]))
         val fragments = object : ArrayList<Fragment>() {
             init {
                 val localFragment = RepositoryFragment()
@@ -366,10 +578,14 @@ class HistoryListActivity : AppCompatActivity() {
         val fragmentAdapter = RepositoryPagerAdapter(this.supportFragmentManager, fragments, titles)
         this.viewPager?.offscreenPageLimit = 1
         this.viewPager?.adapter = fragmentAdapter
-        this.tabLayout?.setupWithViewPager(this.viewPager)
-        this.tabLayout?.setTabsFromPagerAdapter(fragmentAdapter) // Знаю, что устарел...
+        this.repositoryTabLayout?.setupWithViewPager(this.viewPager)
+        this.repositoryTabLayout?.setTabsFromPagerAdapter(fragmentAdapter) // Знаю, что устарел...
         this.viewPager?.addOnPageChangeListener(this.getPageChangeListener())
     }
+
+    /**
+     * goToCurrentHistory(history: History) переходит на окно выбранной истории.
+     */
 
     fun goToCurrentHistory(history: History) {
         //Переходим в выбранную историю --->
@@ -386,6 +602,10 @@ class HistoryListActivity : AppCompatActivity() {
         log.info("DATA SIZE: " + analyser.inputDataList.size)
     }
 
+    /**
+     * refresh() обновляет все элементы окна.
+     */
+
     fun refresh() {
         this.bottomNavigationBar.setBottomNavigationViewVisibility()
         this.optionBar.refresh()
@@ -394,12 +614,20 @@ class HistoryListActivity : AppCompatActivity() {
         RepositoryFragment.CURRENT?.refresh()
     }
 
+    /**
+     * getPageChangeListener() возращает обработчик событий при смене вкладок мжду историями.
+     */
+
     private fun getPageChangeListener(): ViewPager.OnPageChangeListener = object
         : ViewPager.OnPageChangeListener {
 
         override fun onPageScrolled(position: Int, posOffset: Float, posOffsetPixels: Int) {
             //Ничего...
         }
+
+        /**
+         * onPageSelected(position: Int) обрабатывает событие выбора данной вкладки.
+         */
 
         @SuppressLint("PrivateResource")
         override fun onPageSelected(position: Int) {
@@ -419,28 +647,47 @@ class HistoryListActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Вложенный класс KeyBoardSupplier помогает activity
+     * с появлением и скрытием клавиатуры на экране.
+     */
+
     inner class KeyBoardSupplier {
+
+        /**
+         * keyBoardFocus хранит в себе крайний графический объект,
+         * с которым работал пользователь. Используется вместо поля currentFocus.
+         */
 
         private var keyBoardFocus: View? = null
 
+        /**
+         * showKeyBoard() показывает клавиатуру.
+         */
+
         internal fun showKeyBoard() {
             this.keyBoardFocus = currentFocus
-            log.info("VIEW: ${this.keyBoardFocus}")
             val inputMethodService = Context.INPUT_METHOD_SERVICE
             val inputMethodManager = HistoryListActivity.THIS!!
                     .getSystemService(inputMethodService) as InputMethodManager
-            //InputMethodManager точно не null:
             inputMethodManager.showSoftInput(this.keyBoardFocus, InputMethodManager.SHOW_IMPLICIT)
         }
 
-        fun hideKeyBoard() {
-            log.info("VIEW: ${this.keyBoardFocus}")
+        /**
+         * showKeyBoard() прячет клавиатуру.
+         */
+
+        internal fun hideKeyBoard() {
             val inputMethodService = Context.INPUT_METHOD_SERVICE
             val inputMethodManager = HistoryListActivity.THIS!!
                     .getSystemService(inputMethodService) as InputMethodManager
             inputMethodManager.hideSoftInputFromWindow(this.keyBoardFocus!!.windowToken, 0)
         }
     }
+
+    /**
+     * onBackPressed() обрабатывает событие при нажатии кнопки "Назад" на телефоне.
+     */
 
     override fun onBackPressed() {
         val currentAdapter = RepositoryFragment.CURRENT?.recyclerViewAdapter

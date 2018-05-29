@@ -1,6 +1,22 @@
 package com.historyManagement.history.historyData
 
-class InputData (val level: Double, val passedDistance: Double, val isAlarm: Boolean) {
+import com.annotations.Temporary
+
+/**
+ * @author Игорь Гулькин создал класс хрен знет когда.
+ *
+ * Класс InputData хранит в себе посылку во время сессии.
+ *
+ * P. S. Я не знаю где брать данные, поэтому я сам себе генерю посылки, кладу их в аналайзер,
+ * чтобы работать с ними в выбранном окне историй.
+ */
+
+@Temporary
+data class InputData (val level: Double, val passedDistance: Double, val isAlarm: Boolean) {
+
+    /**
+     * Время пришедшей посылки.
+     */
 
     val milliTime: Long = System.currentTimeMillis()
 

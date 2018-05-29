@@ -7,6 +7,11 @@ import java.util.*
 import java.util.function.Function
 import java.util.logging.Logger
 
+/**
+ * Класс DataAnalyser встраивается в каждую историю и
+ * хранит в себе данные о поездке.
+ */
+
 class DataAnalyser {
 
     companion object {
@@ -34,9 +39,9 @@ class DataAnalyser {
 
     var medium: Double = 0.0
 
-    var high: Double = 0.toDouble()
+    var high: Double = 0.0
 
-    var critical: Double = 0.toDouble()
+    var critical: Double = 0.0
 
     /**
      * WarningAnalyser анализирует уровни усталости,

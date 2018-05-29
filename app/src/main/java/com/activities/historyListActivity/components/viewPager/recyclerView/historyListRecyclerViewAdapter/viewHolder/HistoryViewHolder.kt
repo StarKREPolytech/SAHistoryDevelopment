@@ -78,7 +78,7 @@ class HistoryViewHolder(itemView: View, private val parentAdapter: HistoryRecycl
             HistoryListActivity.THIS!!.refresh()
         })
         this.cardRelativeLayout?.setOnLongClickListener({
-            HistoryListActivity.THIS!!.showOptionsView()
+            HistoryListActivity.THIS!!.setEditMode()
             HistoryListActivity.THIS!!.refresh()
             true
         })
